@@ -1,9 +1,11 @@
-# GnGeo - Neo-Geo Emulator for GNU/Linux
+# GnGeo: Neo-Geo Emulator for GNU/Linux
 
-Gngeo is a Neo-Geo emulator for GNU/Linux (maybe some other Unix)
-and built around many different block with various licences.
+GnGeo is a Neo-Geo emulator for GNU/Linux platform it has a driver system
+much like that of MAME and is quite fast.
 
 ### License:
+
+GnGeo was built with different licenses in its original source code.
 
 The original code is released under the GPL v2 with this special exception of
 this project:
