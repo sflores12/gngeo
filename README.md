@@ -1,4 +1,4 @@
-# GnGeo Emulator
+# GnGeo - Neo-Geo Emulator for GNU/Linux
 
 Gngeo is a Neo-Geo emulator for GNU/Linux (maybe some other Unix)
 and built around many different block with various licences.
