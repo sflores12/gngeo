@@ -1,7 +1,14 @@
 # GnGeo: Neo-Geo Emulator for GNU/Linux
 
+### GnGeo Emulator means
+
 GnGeo is a Neo-Geo emulator for GNU/Linux platform it has a driver system
 much like that of MAME and is quite fast.
+
+*Dependencies for Debian/Ubuntu Linux:*
+---------------------------------------
+
+    # apt install gawk libsdl1.2-dev libsdl-image1.2-dev nasm zlib1g-dev
 
 ### License:
 
@@ -23,6 +30,8 @@ this project:
 > the library, but you are not obligated to do so.
 >
 > * If you do not wish to do so, delete this exception statement from your version.
+
+apt install gawk nasm libsdl1.2-dev libsdl-image1.2-dev zlib1g-dev
 
 ---
 
