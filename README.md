@@ -5,13 +5,13 @@
 GnGeo is a Neo-Geo emulator for GNU/Linux platform it has a driver system
 much like that of MAME and is quite fast.
 
-*Dependencies for Debian/Ubuntu Linux:*
----------------------------------------
+Dependencies for Debian/Ubuntu Linux:
+-------------------------------------
 
     # apt install gawk libsdl1.2-dev libsdl-image1.2-dev nasm zlib1g-dev
 
-*Required firmware (BIOS):*
----------------------------
+Required firmware (BIOS):
+-------------------------
 
 To play some games on the emulator, you need to have the proprietary
 Neo-Geo firmware (BIOS).
@@ -32,9 +32,9 @@ in the roms directory within GnGeo.
 > **uni-bios.rom** - You can download the latest version at
 > this link: http://unibios.free.fr
 
-If have similar files as: (__sfix.sfix, sm1.sm1__), just rename them properly.
+If have similar files as: (*sfix.sfix, sm1.sm1*), just rename them properly.
 
-You can configure your bios in **$HOME/.gngeo/gngeorc**
+You can configure your bios in **$HOME/.gngeo/gngeorc**.
 
 ### License:
 
