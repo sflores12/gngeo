@@ -10,6 +10,32 @@ much like that of MAME and is quite fast.
 
     # apt install gawk libsdl1.2-dev libsdl-image1.2-dev nasm zlib1g-dev
 
+*Required firmware (BIOS):*
+---------------------------
+
+To play some games on the emulator, you need to have the proprietary
+Neo-Geo firmware (BIOS).
+
+The necessary firmwares are:
+
+ * 000-lo.lo
+ * aes-bios.bin (A.E.S)
+ * asia-s3.rom (Asia)
+ * sp-s2.sp1 (Europe)
+ * usa_2slt.bin (USA)
+ * uni-bios.rom
+ * vs-bios.rom (Japan)
+
+All files have to be zipped in "**neogeo.zip**" and this file has to be placed
+in the roms directory within GnGeo.
+
+> **uni-bios.rom** - You can download the latest version at
+> this link: http://unibios.free.fr
+
+If have similar files as: (sfix.sfix, sm1.sm1), just rename them properly.
+
+You can configure your bios in ** $HOME/.gngeo/gngeorc **
+
 ### License:
 
 GnGeo was built with different licenses in its original source code.
@@ -30,8 +56,6 @@ this project:
 > the library, but you are not obligated to do so.
 >
 > * If you do not wish to do so, delete this exception statement from your version.
-
-apt install gawk nasm libsdl1.2-dev libsdl-image1.2-dev zlib1g-dev
 
 ---
 
