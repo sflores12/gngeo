@@ -32,9 +32,9 @@ in the roms directory within GnGeo.
 > **uni-bios.rom** - You can download the latest version at
 > this link: http://unibios.free.fr
 
-If have similar files as: (sfix.sfix, sm1.sm1), just rename them properly.
+If have similar files as: (__sfix.sfix, sm1.sm1__), just rename them properly.
 
-You can configure your bios in ** $HOME/.gngeo/gngeorc **
+You can configure your bios in **$HOME/.gngeo/gngeorc**
 
 ### License:
 
