@@ -38,6 +38,19 @@ You can configure your bios in **$HOME/.gngeo/gngeorc**.
 
 ### License:
 
+The GnGeo project as a whole is distributed under the terms of the
+[GNU General Public License, version 2](https://www.gnu.org/licenses/gpl-2.0.html)
+or later (GPL-2+), since it contains code made available under multiple
+GPL-compatible licenses. We would encourage new contributors to distribute
+files under this license.
+
+Please note that GnGeo is a registered trademark of Mathieu PEPONAS,
+and permission is required to use the "GnGeo" name, logo or wordmark.
+
+<a href="https://www.gnu.org/licenses/gpl-2.0.html" target="_blank">
+<img align="right" src="https://opensource.org/trademarks/opensource/OSI-logo-100x117.png">
+</a>
+
 GnGeo was built with different licenses in its original source code.
 
 The original code is released under the GPL v2 with this special exception of
@@ -60,5 +73,7 @@ this project:
 ---
 
 The project was governed by a GPL v2 license that can be found in the files.
+
+Please see [LICENSE](LICENSE) for further details.
 
 - © 2017 Project created and re-written by Carlos Donizete Froes [a.k.a coringao]
