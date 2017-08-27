@@ -65,7 +65,7 @@ this project:
 
 ---
 
-Please note that GnGeo is a registered trademark of *Mathieu PEPONAS*,
+Please note that GnGeo is a registered trademark of **Mathieu PEPONAS**,
 and permission is required to use the "GnGeo" name, logo or wordmark.
 
 The project was governed by a GPL v2 license that can be found in the files.
