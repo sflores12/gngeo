@@ -28,7 +28,6 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <dirent.h>
-#include <stdbool.h>
 
 #ifdef HAVE_GETOPT_LONG
 #include <getopt.h>

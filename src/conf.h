@@ -1,8 +1,6 @@
 #ifndef _CONF_H_
 #define _CONF_H_
 
-#include <stdbool.h>
-
 typedef enum CF_TYPE{
     CFT_INT=0,
     CFT_STRING,
