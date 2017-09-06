@@ -9,6 +9,7 @@
 #include "../video.h"
 #include "../effect.h"
 #include "../conf.h"
+#include "../gnutil.h"
 #ifdef GP2X
 #include "../gp2x.h"
 

@@ -11,6 +11,7 @@
 #include "../video.h"
 #include "../effect.h"
 #include "../conf.h"
+#include "../gnutil.h"
 #include "glproc.h"
 
 //#define TEXMIN256

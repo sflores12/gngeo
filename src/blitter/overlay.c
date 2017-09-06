@@ -8,12 +8,13 @@
 #include "../screen.h"
 #include "../video.h"
 #include "../conf.h"
+#include "../gnutil.h"
 
 static SDL_Rect ov_rect;
 static SDL_Overlay *overlay;
 
 
-SDL_bool
+int
 blitter_overlay_init()
 {	
     Uint32 width = visible_area.w;
