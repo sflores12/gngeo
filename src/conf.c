@@ -39,25 +39,9 @@
 #include "unzip.h"
 #include "SDL.h"
 #include "conf.h"
-#include "fileio.h"
-//#include "driver.h"
 #include "emu.h"
-#include "fileio.h"
 #include "memory.h"
-
-#if defined (__AMIGA__)
-#ifdef DATA_DIRECTORY
-#undef DATA_DIRECTORY
-#define DATA_DIRECTORY "/PROGDIR/data/"
-#endif
-#endif
-#if defined (WII)
-#define ROOTPATH "sd:/apps/gngeo/"
-#elif defined (__AMIGA__)
-#define ROOTPATH "/PROGDIR/data/"
-#else
-#define ROOTPATH ""
-#endif
+#include "gnutil.h"
 
 /* 
 
@@ -68,8 +52,7 @@
    wii conf:
    etc.
 
-
- */
+*/
 
 static struct {
 	CONF_ITEM **conf;
