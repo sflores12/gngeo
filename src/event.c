@@ -2,8 +2,6 @@
 #include "config.h"
 #endif
 
-#include <stdbool.h>
-
 #include "SDL.h"
 #include "screen.h"
 #include "event.h"
