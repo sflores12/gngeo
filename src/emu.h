@@ -56,7 +56,6 @@ struct {
 
     Uint8 sound;
     Uint8 vsync;
-    Uint8 snd_st_reg_create;
     Uint8 do_message;
     Uint8 nb_joy;
     Uint8 raster;

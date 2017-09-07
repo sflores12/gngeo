@@ -35,14 +35,11 @@
 #include "debug.h"
 
 #include "timer.h"
-//#include "streams.h"
 #include "ym2610/2610intf.h"
 #include "sound.h"
 #include "screen.h"
 #include "neocrypt.h"
 #include "conf.h"
-//#include "driver.h"
-//#include "gui_interf.h"
 #ifdef FULL_GL
 #include "videogl.h"
 #endif
@@ -58,15 +55,8 @@
 int frame;
 int nb_interlace = 256;
 int current_line;
-static int arcade;
-
-extern int irq2enable, irq2start, irq2repeat, irq2control, irq2taken;
-extern int lastirq2line;
-extern int irq2repeat_limit;
-extern Uint32 irq2pos_value;
 
 void setup_misc_patch(char *name) {
-
 
 	if (!strcmp(name, "ssideki")) {
 		WRITE_WORD_ROM(&memory.rom.cpu_m68k.p[0x2240], 0x4e71);
