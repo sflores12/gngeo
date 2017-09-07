@@ -2,11 +2,11 @@
 #include "config.h"
 #endif
 
-
 #include <SDL.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include "memory.h"
+#include "gnutil.h"
 
 /* TODO: finish it ...... */
 
