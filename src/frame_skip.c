@@ -28,7 +28,7 @@
 #include "messages.h"
 #include "emu.h"
 #include "conf.h"
-
+#include "gnutil.h"
 
 #ifndef uclock_t
 #define uclock_t Uint32
