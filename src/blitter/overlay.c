@@ -27,7 +27,7 @@ blitter_overlay_init()
     /* TODO : for now, effect are not handled by the YUV blitter */
     if (neffect != 0) {
 	printf("WARNING: Overlay does not support effect.\n");
-	return SDL_FALSE;
+	return GN_FALSE;
     }
 	
 	

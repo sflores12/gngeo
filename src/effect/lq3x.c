@@ -35,6 +35,7 @@
 #include "SDL.h"
 #include "../screen.h"
 #include "../video.h"
+#include "../gnutil.h"
 
 #include "lq3x.h"
 

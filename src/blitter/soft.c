@@ -29,7 +29,7 @@ static SDL_Rect screen_rect =	{ 0,  0, 304, 224};
 static int vsync;
 
 
-SDL_bool
+int
 blitter_soft_init()
 {
 	Uint32 width = visible_area.w;

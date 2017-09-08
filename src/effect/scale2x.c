@@ -1,4 +1,3 @@
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -6,6 +5,7 @@
 #include "SDL.h"
 #include "../screen.h"
 #include "../video.h"
+#include "../gnutil.h"
 
 #include "scale2x.h"
 #include "scale3x.h"

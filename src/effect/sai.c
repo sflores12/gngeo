@@ -1,4 +1,3 @@
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -7,6 +6,7 @@
 #include "SDL.h"
 #include "../screen.h"
 #include "../video.h"
+#include "../gnutil.h"
 
 extern void Init_2xSaIMMX(Uint32 bitformat);
 extern void _2xSaILine(Uint8 *srcPtr, Uint8 *deltaPtr, Uint32 srcPitch, Uint32 width,
@@ -21,7 +21,7 @@ extern void _2xSaISuperEagleLine(Uint8 *srcPtr, Uint8 *deltaPtr, Uint32 srcPitch
 static Uint8 *deltaptr;
 //static int screenw,screenh;
 
-SDL_bool
+int
 effect_sai_init()
 {
 

@@ -29,6 +29,7 @@
  * file, but you are not obligated to do so.  If you do not wish to
  * do so, delete this exception statement from your version.
  */
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -36,6 +37,7 @@
 #include "SDL.h"
 #include "../screen.h"
 #include "../video.h"
+#include "../gnutil.h"
 
 #include "hqx_common.h"
 #include "hq2x.h"

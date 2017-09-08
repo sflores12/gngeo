@@ -25,14 +25,14 @@ static SDL_Surface *video_opengl;
 static SDL_Surface *tex_opengl;
 static SDL_Rect glrectef;
 
-static SDL_bool load_glproc() {
++static int load_glproc() {
     static int init=0;
     CONF_ITEM *cf_libgl=cf_get_item_by_name("libglpath");
-    if (init) return SDL_TRUE;
+    if (init) return GN_TRUE;
     init=1;
     if (SDL_GL_LoadLibrary(CF_STR(cf_libgl))==-1) {
         printf("Unable to load OpenGL library: %s\n", CF_STR(cf_libgl));
-        return SDL_FALSE;
+        return GN_FALSE;
     }
 	
     pglClearColor	= SDL_GL_GetProcAddress("glClearColor");
