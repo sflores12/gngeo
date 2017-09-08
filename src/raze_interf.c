@@ -109,6 +109,10 @@ static void debug(UWORD pc)
 }
 #endif
 
+void cpu_z80_mkstate(gzfile gzf,int mode) {
+	/*TODO*/
+}
+
 void cpu_z80_init(void)
 {
     z80_init_memmap();

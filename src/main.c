@@ -39,10 +39,11 @@
 #include "effect.h"
 #include "conf.h"
 #include "transpack.h"
-#include "gngeo_icon.h"
 #include "event.h"
 #include "menu.h"
 #include "frame_skip.h"
+#include "gnutil.h"
+#include "roms.h"
 
 #ifdef USE_GUI
 #include "gui_interf.h"

@@ -80,6 +80,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <stddef.h>
 #include "z80.h"
 
 #ifdef Z80_MSX

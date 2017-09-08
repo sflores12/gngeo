@@ -16,10 +16,12 @@
 
 #include "blitter.h"
 #include "effect.h"
+#include "font.h"
+#include "gngeo_icon.h"
 
-SDL_bool effect_none_init(void);
+int effect_none_init(void);
 
-SDL_bool effect_smooth_init(void);
+int effect_smooth_init(void);
 
 blitter_func blitter[] = {
 	{"soft", "Software blitter", blitter_soft_init, NULL, blitter_soft_update, blitter_soft_fullscreen,

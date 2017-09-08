@@ -36,6 +36,7 @@
 #include "state.h"
 #include "debug.h"
 #include "conf.h"
+#include "gnutil.h"
 
 extern unsigned int cpu68k_clocks;
 extern Uint8 *cpu68k_rom;

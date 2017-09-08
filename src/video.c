@@ -145,6 +145,7 @@ int init_sprite_cache(Uint32 size, Uint32 bsize) {
 	gcache->ptr = malloc(gcache->total_bank * sizeof (Uint8*));
 	if (gcache->ptr == NULL)
 		return 1;
+		return GN_FALSE;
 	//gcache->z_pos=malloc(gcache->total_bank*sizeof(unz_file_pos ));
 	memset(gcache->ptr, 0, gcache->total_bank * sizeof (Uint8*));
 

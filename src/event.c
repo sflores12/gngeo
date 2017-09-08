@@ -8,6 +8,8 @@
 #include "conf.h"
 #include "emu.h"
 #include "memory.h"
+#include "gnutil.h"
+#include "messages.h"
 
 static int get_mapid(char *butid) {
 	printf("Get mapid %s\n",butid);
