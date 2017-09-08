@@ -12,6 +12,7 @@
 #include "emu.h"
 #include "video.h"
 #include "conf.h"
+#include "gnutil.h"
 
 #include "blitter.h"
 #include "effect.h"

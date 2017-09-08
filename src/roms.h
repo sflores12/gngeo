@@ -3,7 +3,6 @@
 #define H_ROMS
 
 #include "SDL.h"
-#include <stdbool.h>
 
 #define REGION_AUDIO_CPU_BIOS        0
 #define REGION_AUDIO_CPU_CARTRIDGE   1
@@ -51,7 +50,6 @@ typedef struct ROM_REGION {
 	Uint32 size;
 }ROM_REGION;
 
-
 typedef struct GAME_ROMS {
 	GAME_INFO info;
 	ROM_REGION cpu_m68k;
@@ -69,8 +67,6 @@ typedef struct GAME_ROMS {
 	ROM_REGION bfix_usage;  /* Bios fix char usage */
 	ROM_REGION cpu_z80c; /* Crypted z80 program rom */
 }GAME_ROMS;
-
-
 
 int dr_load_roms(GAME_ROMS *r,char *rom_path,char *name);
 void dr_free_roms(GAME_ROMS *r);

@@ -6,7 +6,6 @@
 #include <stdlib.h>
 #include <strings.h>
 #include <string.h>
-#include <stdbool.h>
 #include "roms.h"
 #include "emu.h"
 #include "memory.h"

@@ -12,7 +12,7 @@
 
 #if defined(HAVE_LIBZ) && defined (HAVE_MMAP)
 #include <zlib.h>
-//#define ZLIB_IN_CHUNK 128*1024
+#include <sys/stat.h>
 #include <unistd.h>
 #include <sys/mman.h>
 #include <assert.h>

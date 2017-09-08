@@ -76,11 +76,8 @@
 #  define READ_BYTE_ROM(a) READ_BYTE(SWAP_BYTE_ADDRESS(a))
 #endif
 
-#define CHECK_ALLOC(a) {if (!a) {printf("Out of Memory\n");exit(1);}}
 #define GFX_MAPPED 1
 #define GZX_MAPPED 2
-
-
 
 typedef struct neo_mem {
 	GAME_ROMS rom;

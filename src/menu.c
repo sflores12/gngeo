@@ -32,6 +32,7 @@
 #include <dirent.h>
 #include <stdbool.h>
 #include <math.h>
+#include <errno.h>
 
 #include "menu.h"
 

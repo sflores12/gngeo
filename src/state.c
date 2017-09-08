@@ -6,18 +6,17 @@
 #include "SDL_endian.h"
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
 #if defined(HAVE_LIBZ) && defined (HAVE_MMAP)
 #include <zlib.h>
 #endif
 
 #include "memory.h"
 #include "state.h"
-#include "fileio.h"
 #include "screen.h"
 #include "sound.h"
 #include "emu.h"
-//#include "streams.h"
+#include "gnutil.h"
+#include "menu.h"
 
 #ifdef USE_STARSCREAM
 static int m68k_flag=0x1;
@@ -672,8 +671,4 @@ void neogeo_init_save_state(void) {
     set_pre_save_function(ST_NEOGEO,neogeo_pre_save_state);
     
 }
-
-
-
-
 

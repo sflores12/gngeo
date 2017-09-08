@@ -9,15 +9,15 @@
 #define LSB_FIRST
 #endif
 
-#include "SDL_types.h"
-#define UINT8     Uint8
-#define UINT16    Uint16
-#define UINT32    Uint32
-#define INT8      Sint8
-#define INT16     Sint16
-#define INT32     Sint32
+#include <stdint.h>
+#define UINT8     uint8_t
+#define UINT16    uint16_t
+#define UINT32    uint32_t
+#define INT8      int8_t
+#define INT16     int16_t
+#define INT32     int32_t
 #ifndef INLINE
-#define INLINE __inline__
+#define INLINE static __inline__
 #endif
 
 #define CALL_MAME_DEBUG
@@ -92,7 +92,6 @@ enum
         REG_SP_CONTENTS = -4
 };
 
-
 #define change_pc16(pc) Z80.PC.w.l=pc;
 
 /* ---- END of mame extract ----- */
@@ -143,7 +142,6 @@ extern void z80_set_irq_line(int irqline, int state);
 extern void z80_set_irq_callback(int (*irq_callback)(int));
 extern const char *z80_info(void *context, int regnum);
 extern unsigned z80_dasm(char *buffer, unsigned pc);
-
 
 /* interface */
 extern void mame_z80_writemem16(UINT16 addr,UINT8 val);

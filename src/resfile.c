@@ -6,10 +6,11 @@
 #include "roms.h"
 #include "resfile.h"
 #include "unzip.h"
-//#include "stb_zlib.h"
 #include "conf.h"
 #include "stb_image.h"
-
+#include <sys/stat.h>
+#include "emu.h"
+#include "gnutil.h"
 
 void zread_char(ZFILE *gz, char *c, int len) {
 	int rc;

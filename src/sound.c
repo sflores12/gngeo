@@ -25,7 +25,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "SDL.h"
-//#include "streams.h"
+#include "sound.h"
+#include "gnutil.h"
 #include "emu.h"
 #include "memory.h"
 #include "profiler.h"

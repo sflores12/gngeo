@@ -61,7 +61,7 @@
  *		now also adjust the R register depending on the skipped opcodes.
  *	 Changes in 2.2:
  *	  - Fixed bugs in CPL, SCF and CCF instructions flag handling.
- *	  - Changed variable EA and ARG16() function to UINT32; this
+ *	  - Changed variable Z80.EA and ARG16() function to UINT32; this
  *		produces slightly more efficient code.
  *	  - The DD/FD XY CB opcodes where XY is 40-7F and Y is not 6/E
  *		are changed to calls to the X6/XE opcodes to reduce object size.

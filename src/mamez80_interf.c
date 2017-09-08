@@ -31,7 +31,6 @@
 static Uint8 *z80map1, *z80map2, *z80map3, *z80map4;
 
 Uint8 mame_z80mem[0x10000];
-static Z80_STATE z80_st;
 
 #if 0
 /* Memory and port IO handler */
