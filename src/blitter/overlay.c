@@ -12,7 +12,6 @@
 static SDL_Rect ov_rect;
 static SDL_Overlay *overlay;
 
-
 int
 blitter_overlay_init()
 {

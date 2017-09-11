@@ -45,12 +45,17 @@
 
 /* 
 
-   Xbox360 conf: A=J0B0,B=J0B1,C=J0B2,D=J0B3,START=J0B6,COIN=J0B10,UP=J0a1,DOWN=J0a1,LEFT=J0A0,RIGHT=J0A0,MENU=J0B7
-   sixaxis conf: Need special calibration :(
-   GP2X conf:    
-   Pandora conf:
-   wii conf:
-   etc.
+Xbox360 conf: A=J0B0,B=J0B1,C=J0B2,D=J0B3,START=J0B6,COIN=J0B10,UP=J0a1,DOWN=J0a1,LEFT=J0A0,RIGHT=J0A0,MENU=J0B7
+   
+sixaxis conf: Need special calibration :(
+   
+GP2X conf:    
+   
+Pandora conf:
+   
+wii conf:
+   
+etc.
 
 */
 

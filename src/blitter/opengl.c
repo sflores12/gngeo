@@ -46,27 +46,28 @@ static int load_glproc() {
     pglEnd		= SDL_GL_GetProcAddress("glEnd");
     pglTexCoord2f	= SDL_GL_GetProcAddress("glTexCoord2f");
     pglVertex2f		= SDL_GL_GetProcAddress("glVertex2f");
+
 	
-    return SDL_TRUE;
+	
+    return GN_TRUE;
 }
 
-SDL_bool
+int
 blitter_opengl_init()
 {
 	Uint32 sdl_flags;
 	Uint32 width = visible_area.w;
 	Uint32 height = visible_area.h;		
 	
-        if (load_glproc() == SDL_FALSE) return SDL_FALSE;
+        if (load_glproc() == GN_FALSE) return GN_FALSE;
 
 	sdl_flags = (fullscreen?SDL_FULLSCREEN:0)| SDL_DOUBLEBUF | SDL_HWSURFACE
 	    | SDL_HWPALETTE | SDL_OPENGL | SDL_RESIZABLE;
-	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
 	if ((effect[neffect].x_ratio!=2 || effect[neffect].y_ratio!=2) &&  
 	    (effect[neffect].x_ratio!=1 || effect[neffect].y_ratio!=1) ) {
 	    printf("Opengl support only effect with a ratio of 2x2 or 1x1\n");
-	    return SDL_FALSE;
+	    return GN_FALSE;
 	}
 	    
 	/*
@@ -92,7 +93,7 @@ blitter_opengl_init()
 	video_opengl = SDL_SetVideoMode(width, height, 16, sdl_flags);
 	
 	if ( video_opengl == NULL)
-		return SDL_FALSE;
+		return GN_FALSE;
 	
 	pglClearColor(0, 0, 0, 0);
 	pglClear(GL_COLOR_BUFFER_BIT);
