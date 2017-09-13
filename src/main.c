@@ -60,49 +60,51 @@ extern bool fatInitDefault(void);
 # include <proto/dos.h>
 #endif
 
-void calculate_hotkey_bitmasks()
+static void catch_me(int signo) {
+	printf("Catch a sigsegv\n");
+	exit(-1);
+}
+int main(int argc, char *argv[])
 {
-    int *p;
-    int i, j, mask;
-    const char *p1_key_list[] = { "p1hotkey0", "p1hotkey1", "p1hotkey2", "p1hotkey3" };
-    const char *p2_key_list[] = { "p2hotkey0", "p2hotkey1", "p2hotkey2", "p2hotkey3" };
+    char *rom_name;
+	char *original_rom_name;
+    int rc;
 
+#ifdef __AMIGA__
+    BPTR file_lock = GetProgramDir();
+    SetProgramDir(file_lock);
+#endif
+	signal(SIGSEGV, catch_me);
 
-    for ( i = 0; i < 4; i++ ) {
-	p=CF_ARRAY(cf_get_item_by_name(p1_key_list[i]));
-	for ( mask = 0, j = 0; j < 4; j++ ) mask |= p[j];
-	conf.p1_hotkey[i] = mask;
+#ifdef WII
+	//   SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_NOPARACHUTE);
+
+	fatInitDefault();
+#endif
+
+    cf_init(); /* must be the first thing to do */
+    cf_init_cmd_line();
+    cf_open_file(NULL); /* Open Default configuration file */
+
+	//Remove path and extension
+    original_rom_name=cf_parse_cmd_line(argc,argv);
+	printf("original rom name=[%s]\n",original_rom_name);
+	rom_name = remove_path_and_extension(original_rom_name, '.', '/'); 
+	printf("rom name=[%s]\n",rom_name);
+
+    /* print effect/blitter list if asked by user */
+    if (!strcmp(CF_STR(cf_get_item_by_name("effect")),"help")) {
+	print_effect_list();
+	exit(0);
+    }
+    if (!strcmp(CF_STR(cf_get_item_by_name("blitter")),"help")) {
+	print_blitter_list();
+	exit(0);
     }
 
-    for ( i = 0; i < 4; i++ ) {
-	p=CF_ARRAY(cf_get_item_by_name(p2_key_list[i]));
-	for ( mask = 0, j = 0; j < 4; j++ ) mask |= p[j];
-	conf.p2_hotkey[i] = mask;
-    }
+	init_sdl();
 
-}
-
-void sdl_set_title(char *name) {
-    char *title;
-    if (name) {
-	title = malloc(strlen("Gngeo : ")+strlen(name)+1);
-	if (title) {
-	  sprintf(title,"Gngeo : %s",name);
-	  SDL_WM_SetCaption(title, NULL);
-	}
-    } else {
-	SDL_WM_SetCaption("Gngeo", NULL);
-    }
-}
-
-void init_sdl(void /*char *rom_name*/) {
-    int surface_type = (CF_BOOL(cf_get_item_by_name("hwsurface"))? SDL_HWSURFACE : SDL_SWSURFACE);
-
-
-    char *nomouse = getenv("SDL_NOMOUSE");
-    SDL_Surface *icon;
-
-    SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_NOPARACHUTE);
+	init_event();
 
 #ifdef GP2X
     atexit(gp2x_quit);
@@ -163,7 +165,10 @@ int main(int argc, char *argv[])
     cf_init_cmd_line();
     cf_open_file(NULL); /* Open Default configuration file */
 
-    rom_name=cf_parse_cmd_line(argc,argv);
+    original_rom_name=cf_parse_cmd_line(argc,argv);
+	printf("original rom name=[%s]\n",original_rom_name);
+	rom_name = remove_path_and_extension(original_rom_name, '.', '/'); 
+	printf("rom name=[%s]\n",rom_name);
 
     /* print effect/blitter list if asked by user */
     if (!strcmp(CF_STR(cf_get_item_by_name("effect")),"help")) {
@@ -181,7 +186,7 @@ int main(int argc, char *argv[])
 #ifdef GP2X
     gp2x_init();
 #endif
-    if (gn_init_skin()!=SDL_TRUE) {
+    if ((rc=gn_init_skin())!=GN_TRUE) {
 	    printf("Can't load skin...\n");
             exit(1);
     }    

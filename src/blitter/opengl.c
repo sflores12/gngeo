@@ -46,9 +46,7 @@ static int load_glproc() {
     pglEnd		= SDL_GL_GetProcAddress("glEnd");
     pglTexCoord2f	= SDL_GL_GetProcAddress("glTexCoord2f");
     pglVertex2f		= SDL_GL_GetProcAddress("glVertex2f");
-
-	
-	
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     return GN_TRUE;
 }
 
@@ -63,6 +61,7 @@ blitter_opengl_init()
 
 	sdl_flags = (fullscreen?SDL_FULLSCREEN:0)| SDL_DOUBLEBUF | SDL_HWSURFACE
 	    | SDL_HWPALETTE | SDL_OPENGL | SDL_RESIZABLE;
+	//SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
 	if ((effect[neffect].x_ratio!=2 || effect[neffect].y_ratio!=2) &&  
 	    (effect[neffect].x_ratio!=1 || effect[neffect].y_ratio!=1) ) {
@@ -155,10 +154,10 @@ blitter_opengl_init()
 #endif
 	}
 	
-	return SDL_TRUE;
+	return GN_TRUE;
 }
 
-SDL_bool
+int
 blitter_opengl_resize(int w,int h)
 {
   Uint32 sdl_flags;
@@ -168,12 +167,12 @@ blitter_opengl_resize(int w,int h)
   video_opengl = SDL_SetVideoMode(w, h, 16, sdl_flags);
 
   if ( video_opengl == NULL)
-    return SDL_FALSE;
+    return GN_FALSE;
 
   pglEnable(GL_TEXTURE_2D);
   pglViewport(0, 0, w, h);
 
-  return SDL_TRUE;
+  return GN_TRUE;
 }
 
 void 
@@ -365,10 +364,14 @@ blitter_opengl_close()
 	//	SDL_FreeSurface(screen);
 }
 
-void
-blitter_opengl_fullscreen()
-{
+void blitter_opengl_fullscreen() {
+/* TODO: Borken, at least on ubuntu with catalyst -> the screen goes black */
 	SDL_WM_ToggleFullScreen(video_opengl);
+	pglEnable(GL_TEXTURE_2D);
+	pglViewport(0, 0, conf.res_x, conf.res_y);
+
+
+
 }
 
 #endif

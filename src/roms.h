@@ -3,6 +3,7 @@
 #define H_ROMS
 
 #include "SDL.h"
+#include <stdbool.h>
 
 #define REGION_AUDIO_CPU_BIOS        0
 #define REGION_AUDIO_CPU_CARTRIDGE   1

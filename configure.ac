@@ -1,9 +1,9 @@
 # Process this file with autoconf to produce a configure script.
 
-AC_INIT(gngeo,0.8.1)
+AC_INIT([gngeo],[0.8.1])
 AC_CONFIG_SRCDIR([src/emu.c])
 AC_CANONICAL_TARGET
-AM_CONFIG_HEADER(config.h)
+AC_CONFIG_HEADERS([config.h])
 
 
 AM_INIT_AUTOMAKE(silent-rules)

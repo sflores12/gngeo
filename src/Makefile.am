@@ -4,24 +4,25 @@ AM_CPPFLAGS = -DDATA_DIRECTORY=\"$(pkgdatadir)\"
 SUBDIRS = effect blitter ym2610 $(m68k_subdir) $(z80_subdir) $(gui_subdir)
 
 bin_PROGRAMS = gngeo
-gngeo_SOURCES = pd4990a.c		gngeo_icon.h		list.c		\
-		sound.h			video.c			profiler.c	\
-		main.c			pd4990a.h		video.h		\
-		memory.c		profiler.h		list.h		\
-		blitter.h		font.h			memory.h	\
-		timer.c			effect.h		frame_skip.c	\
-		screen.c		timer.h			emu.c		\
-		messages.h		screen.h		unzip.h		\
-		neocrypt.c		sound.c			unzip.c		\
-		debug.c			debug.h			neocrypt.h	\
-		state.h			video_template.h	conf.c		\
-		transpack.h		transpack.c             resfile.c	\
-		menu.c			menu.h           	messages.c	\
-		roms.h			roms.c			mame_layer.h	\
-		frame_skip.h		emu.h			resfile.h	\
-		state.c			conf.h			event.c		\
-		stb_zlib.h		mame_layer.c		neoboot.c	\
-		stb_zlib.c		stb_image.c		stb_image.h
+gngeo_SOURCES =	pd4990a.c	gngeo_icon.h	profiler.c		\
+		sound.h		video.c		list.c			\
+		main.c		pd4990a.h	video.h			\
+		memory.c	profiler.h	list.h			\
+		blitter.h	font.h		memory.h		\
+		timer.c		effect.h	frame_skip.c		\
+		screen.c	timer.h		emu.c			\
+		messages.h	screen.h	unzip.h			\
+		neocrypt.c	sound.c		unzip.c			\
+		debug.c		debug.h		neocrypt.h		\
+		state.h		conf.c		conf.h			\
+		transpack.h	transpack.c	gnutil.c		\
+		menu.c		menu.h		video_template.h	\
+		roms.h		roms.c		mame_layer.h    	\
+		mame_layer.c	neoboot.c	event.h        		\
+		stb_image.c	stb_image.h	stb_zlib.c		\
+		stb_zlib.h	event.c		gnutil.h		\
+		state.c		resfile.h	emu.h			\
+		frame_skip.h	messages.c	resfile.c    
 
 # Platform dependant source and lib
 if USE_STARSCREAM

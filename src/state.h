@@ -97,4 +97,4 @@ int mkstate_data(gzFile *gzf,void *data,int size,int mode);
 void neogeo_init_save_state(void);
 
 #endif
-
+#endif
