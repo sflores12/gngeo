@@ -3313,7 +3313,107 @@ next_frame:
 
 
 void ym2610_mkstate(gzFile *gzf,int mode) {
-	mkstate_data(gzf, &YM2610, sizeof (YM2610), mode);
+	void ym2610_mkstate(gzFile gzf,int mode) {
+
+	mkstate_data(gzf, &YM2610.regs, 512, mode);
+	mkstate_data(gzf, &YM2610.OPN.ST.BusyExpire, 4, mode);
+	mkstate_data(gzf, &YM2610.OPN.ST.address, 1, mode);
+	mkstate_data(gzf, &YM2610.OPN.ST.irq, 1, mode);
+	mkstate_data(gzf, &YM2610.OPN.ST.irqmask, 1, mode);
+	mkstate_data(gzf, &YM2610.OPN.ST.status, 1, mode);
+	mkstate_data(gzf, &YM2610.OPN.ST.mode, 4, mode);
+	mkstate_data(gzf, &YM2610.OPN.ST.prescaler_sel, 1, mode);
+	mkstate_data(gzf, &YM2610.OPN.ST.fn_h, 1, mode);
+	mkstate_data(gzf, &YM2610.OPN.ST.TA, 4, mode);
+	mkstate_data(gzf, &YM2610.OPN.ST.TAC, 4, mode);
+	mkstate_data(gzf, &YM2610.OPN.ST.TB, 1, mode);
+	mkstate_data(gzf, &YM2610.OPN.ST.TBC, 4, mode);
+
+	for(int ch = 0; ch < 6; ch++)
+	{
+		mkstate_data(gzf, YM2610.CH[ch].op1_out, 4*2, mode);
+		mkstate_data(gzf, &YM2610.CH[ch].fc, 4, mode);
+
+		for(int slot = 0; slot < 4; slot++)
+		{
+			FM_SLOT *SLOT = &YM2610.CH[ch].SLOT[slot];
+
+			mkstate_data(gzf, &SLOT->phase, 4, mode);
+			mkstate_data(gzf, &SLOT->state, 1, mode);
+			mkstate_data(gzf, &SLOT->volume, 4, mode);
+		}
+	}
+
+	mkstate_data(gzf, YM2610.OPN.SL3.fc, 4*3, mode);
+	mkstate_data(gzf, &YM2610.OPN.SL3.fn_h, 1, mode);
+	mkstate_data(gzf, YM2610.OPN.SL3.kcode, 3, mode);
+
+	mkstate_data(gzf, &YM2610.addr_A1, 1, mode);
+	mkstate_data(gzf, &YM2610.adpcm_arrivedEndAddress, 1, mode);
+
+	for(int ch = 0; ch < 6; ch++)
+	{
+		mkstate_data(gzf, &YM2610.adpcma[ch].flag, 1, mode);
+		mkstate_data(gzf, &YM2610.adpcma[ch].now_data, 1, mode);
+		mkstate_data(gzf, &YM2610.adpcma[ch].now_addr, 4, mode);
+		mkstate_data(gzf, &YM2610.adpcma[ch].now_step, 4, mode);
+		mkstate_data(gzf, &YM2610.adpcma[ch].adpcma_acc, 4, mode);
+		mkstate_data(gzf, &YM2610.adpcma[ch].adpcma_step, 4, mode);
+		mkstate_data(gzf, &YM2610.adpcma[ch].adpcma_out, 4, mode);
+	}
+
+	mkstate_data(gzf, &YM2610.adpcmb.portstate, 1, mode);
+	mkstate_data(gzf, &YM2610.adpcmb.now_addr, 4, mode);
+	mkstate_data(gzf, &YM2610.adpcmb.now_step, 4, mode);
+	mkstate_data(gzf, &YM2610.adpcmb.acc, 4, mode);
+	mkstate_data(gzf, &YM2610.adpcmb.prev_acc, 4, mode);
+	mkstate_data(gzf, &YM2610.adpcmb.adpcmd, 4, mode);
+	mkstate_data(gzf, &YM2610.adpcmb.adpcml, 4, mode);
+
+	if(mode == STREAD)
+	{
+		for(int r = 0; r < 16; r++)
+		{
+			SSG_write(0, r);
+			SSG_write(1, YM2610.regs[r]);
+		}
+
+		for(unsigned int r = 0x30; r <0x9e; r++)
+		{
+			if ((r & 3) != 3)
+			{
+				OPNWriteReg(&YM2610.OPN, r, YM2610.regs[r]);
+				OPNWriteReg(&YM2610.OPN, r | 0x100, YM2610.regs[r | 0x100]);
+			}
+		}
+
+		for(unsigned int r = 0xb0; r < 0xb6; r++)
+		{
+			if ((r & 3) != 3)
+			{
+				OPNWriteReg(&YM2610.OPN, r, YM2610.regs[r]);
+				OPNWriteReg(&YM2610.OPN, r | 0x100, YM2610.regs[r | 0x100]);
+			}
+		}
+
+		OPNB_ADPCMA_write(0x101, YM2610.regs[0x101]);
+		for(int r = 0; r < 6; r++)
+		{
+			OPNB_ADPCMA_write(r + 0x108, YM2610.regs[r + 0x108]);
+			OPNB_ADPCMA_write(r + 0x110, YM2610.regs[r + 0x110]);
+			OPNB_ADPCMA_write(r + 0x118, YM2610.regs[r + 0x118]);
+			OPNB_ADPCMA_write(r + 0x120, YM2610.regs[r + 0x120]);
+			OPNB_ADPCMA_write(r + 0x128, YM2610.regs[r + 0x128]);
+		}
+
+		YM2610.adpcmb.volume = 0;
+
+		for(int r = 1; r < 16; r++)
+			OPNB_ADPCMB_write(&YM2610.adpcmb, r + 0x10, YM2610.regs[r + 0x10]);
+
+		if (pcmbufB)
+			YM2610.adpcmb.now_data = *(pcmbufB + (YM2610.adpcmb.now_addr >> 1));
+	}
 }
 
 #ifdef SAVE_STATE
