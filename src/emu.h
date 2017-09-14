@@ -56,6 +56,7 @@ struct {
 
     Uint8 sound;
     Uint8 vsync;
+    //Uint8 snd_st_reg_create;
     Uint8 do_message;
     Uint8 nb_joy;
     Uint8 raster;
@@ -143,13 +144,6 @@ void neogeo_reset(void);
 #define PROFILER_STOP(a)
 #endif
 
-/* LOG generation */
-#define GNGEO_LOG(...)
-#define DEBUG_LOG printf
-//#define GNGEO_LOG printf
-
-#define TRUE 1
-#define FALSE 1
 
 
 #endif

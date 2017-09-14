@@ -12,10 +12,7 @@
 
 ***************************************************************************/
 
-//#include "driver.h"
-//#include "neogeo.h"
 #include "mame_layer.h"
-
 
 /* General Bootleg Functions - used by more than 1 game */
 

@@ -35,11 +35,14 @@
 #include "debug.h"
 
 #include "timer.h"
+//#include "streams.h"
 #include "ym2610/2610intf.h"
 #include "sound.h"
 #include "screen.h"
 #include "neocrypt.h"
 #include "conf.h"
+//#include "driver.h"
+//#include "gui_interf.h"
 #ifdef FULL_GL
 #include "videogl.h"
 #endif
@@ -55,8 +58,15 @@
 int frame;
 int nb_interlace = 256;
 int current_line;
+//static int arcade;
+//
+//extern int irq2enable, irq2start, irq2repeat, irq2control, irq2taken;
+//extern int lastirq2line;
+//extern int irq2repeat_limit;
+//extern Uint32 irq2pos_value;
 
 void setup_misc_patch(char *name) {
+
 
 	if (!strcmp(name, "ssideki")) {
 		WRITE_WORD_ROM(&memory.rom.cpu_m68k.p[0x2240], 0x4e71);
@@ -131,8 +141,6 @@ void init_sound(void) {
 		YM2610_sh_start();
 #endif
 	if (conf.sound)	pause_audio(0);
-		conf.snd_st_reg_create = 1;
-
 
 }
 
@@ -284,24 +292,7 @@ static inline int update_scanline(void) {
 	return memory.vid.irq2taken;
 }
 
-static Uint16 pending_save_state = 0, pending_load_state = 0;
 static int slow_motion = 0;
-
-static inline void state_handling(int save,int load) {
-	if (save) {
-		//if (conf.sound) SDL_LockAudio();
-		save_state(conf.game, save - 1);
-		//if (conf.sound) SDL_UnlockAudio();
-		reset_frame_skip();
-	}
-	if (load) {
-		//if (conf.sound) SDL_LockAudio();
-		load_state(conf.game, load - 1);
-		//if (conf.sound) SDL_UnlockAudio();
-		reset_frame_skip();
-	}
-	pending_load_state = pending_save_state = 0;
-}
 
 void main_loop(void) {
 	int neo_emu_done = 0;
@@ -524,7 +515,7 @@ void main_loop(void) {
 					conf.test_switch = 1;
 					break;
 					case SDLK_F5:
-					show_fps ^= SDL_TRUE;
+					show_fps ^= GN_TRUE;
 					break;
 					case SDLK_F4:
 					show_keysym = 1 - show_keysym;
@@ -571,7 +562,7 @@ void main_loop(void) {
 					}
 					break;
 					case SDLK_F10:
-					autoframeskip ^= SDL_TRUE;
+					autoframeskip ^= GN_TRUE;
 					if (autoframeskip) {
 						reset_frame_skip();
 						draw_message("AutoFrameSkip : ON");
@@ -579,7 +570,7 @@ void main_loop(void) {
 					draw_message("AutoFrameSkip : OFF");
 					break;
 					case SDLK_F11:
-					sleep_idle ^= SDL_TRUE;
+					sleep_idle ^= GN_TRUE;
 					if (sleep_idle)
 					draw_message("Sleep idle : ON");
 					else
