@@ -9,8 +9,7 @@
 #include "roms.h"
 #include "emu.h"
 #include "memory.h"
-//#include "unzip.h"
-#if defined(HAVE_LIBZ)// && defined (HAVE_MMAP)
+#if defined(HAVE_LIBZ)
 #include "zlib.h"
 #endif
 #include "unzip.h"
@@ -20,6 +19,9 @@
 #include "conf.h"
 #include "resfile.h"
 #include "menu.h"
+#include "gnutil.h"
+#include "frame_skip.h"
+#include "screen.h"
 #ifdef GP2X
 #include "gp2x.h"
 #include "ym2610-940/940shared.h"
@@ -136,7 +138,7 @@ Uint8 scramblecode_kof2000[7] = {0xEC, 15, 14, 7, 3, 10, 5,};
 #define LOAD_BUF_SIZE (128*1024)
 static Uint8* iloadbuf = NULL;
 
-char romerror[1024];
+//char romerror[1024];
 
 /* Actuall Code */
 
@@ -1210,7 +1212,7 @@ static int init_roms(GAME_ROMS *r) {
 	return 0;
 }
 
-bool dr_load_bios(GAME_ROMS *r) {
+int dr_load_bios(GAME_ROMS *r) {
 	FILE *f;
 	int i;
 	PKZIP *pz;
@@ -1219,21 +1221,21 @@ bool dr_load_bios(GAME_ROMS *r) {
 	unsigned int size;
 	char *rpath = CF_STR(cf_get_item_by_name("rompath"));
 	char *fpath;
-	char *romfile;
+	const char *romfile;
 	fpath = malloc(strlen(rpath) + strlen("neogeo.zip") + 2);
 	sprintf(fpath, "%s/neogeo.zip", rpath);
 
 	pz = gn_open_zip(fpath);
 	if (pz == NULL) {
-		fprintf(stderr, "Can't open BIOS (%s)\n", fpath);
+		gn_set_error_msg( "Can't open BIOS\n%s\n", fpath);
 		free(fpath);
-		return false;
+		return GN_FALSE;
 	}
 
 	memory.ng_lo = gn_unzip_file_malloc(pz, "000-lo.lo", 0x0, &size);
 	if (memory.ng_lo == NULL) {
-		printf("Couldn't find 000-lo.lo, please check your bios\n");
-		return false;
+		gn_set_error_msg("Couldn't find 000-lo.lo\nPlease check your bios\n");
+		return GN_FALSE;
 	}
 
 	if (!(r->info.flags & HAS_CUSTOM_SFIX_BIOS)) {
@@ -1245,8 +1247,8 @@ bool dr_load_bios(GAME_ROMS *r) {
 			r->bios_sfix.p = gn_unzip_file_malloc(pz, "sfix.sfix", 0x0,
 					&r->bios_sfix.size);
 			if (r->bios_sfix.p == NULL) {
-				printf("Couldn't find sfix.sfx nor sfix.sfix, please check your bios\n");
-				return false;
+				gn_set_error_msg("Couldn't find sfix.sfx nor sfix.sfix\nPlease check your bios\n");
+				return GN_FALSE;
 			}
 		}
 	}
@@ -1265,10 +1267,10 @@ bool dr_load_bios(GAME_ROMS *r) {
 				sprintf(unipath, "%s/uni-bios.rom", rpath);
 				f = fopen(unipath, "rb");
 				if (!f) { /* TODO: Fallback to arcade mode */
-					fprintf(stderr, "Can't open Universal BIOS (%s)\n", unipath);
+					gn_set_error_msg( "Can't open Universal BIOS\n%s\n", unipath);
 					free(fpath);
 					free(unipath);
-					return false;
+					return GN_FALSE;
 				}
 				r->bios_m68k.p = malloc(0x20000);
 				totread = fread(r->bios_m68k.p, 0x20000, 1, f);
@@ -1299,7 +1301,7 @@ bool dr_load_bios(GAME_ROMS *r) {
 			r->bios_m68k.p = gn_unzip_file_malloc(pz, romfile, 0x0,
 					&r->bios_m68k.size);
 			if (r->bios_m68k.p == NULL) {
-				printf("Couldn't loas bios %s\n", romfile);
+				gn_set_error_msg("Couldn't load bios\n%s\n", romfile);
 				goto error;
 			}
 		}
@@ -1307,15 +1309,15 @@ bool dr_load_bios(GAME_ROMS *r) {
 
 	gn_close_zip(pz);
 	free(fpath);
-	return true;
+	return GN_TRUE;
 
 error:
 	gn_close_zip(pz);
 	free(fpath);
-	return false;
+	return GN_FALSE;
 }
 
-ROM_DEF *dr_check_zip(char *filename) {
+ROM_DEF *dr_check_zip(const char *filename) {
 
 	char *z;
 	ROM_DEF *drv;
@@ -1330,7 +1332,10 @@ ROM_DEF *dr_check_zip(char *filename) {
 	z = strstr(game, ".zip");
 	//	printf("z=%s\n", game);
 	if (z == NULL)
+	{
+		free(game);
 		return NULL;
+	}
 	z[0] = 0;
 	drv = res_load_drv(game);
 	free(game);
@@ -1348,14 +1353,15 @@ int dr_load_roms(GAME_ROMS *r, char *rom_path, char *name) {
 
 	drv = res_load_drv(name);
 	if (!drv) {
-		sprintf(romerror, "Can't find rom driver for %s\n", name);
-		return false;
+		gn_set_error_msg("Can't find rom driver for %s\n", name);
+
+		return GN_FALSE;
 	}
 
 	gz = open_rom_zip(rom_path, name);
 	if (gz == NULL) {
-		sprintf(romerror,"Rom %s/%s.zip not found\n", rom_path, name);
-		return false;
+		gn_set_error_msg("Rom %s/%s.zip not found\n", rom_path, name);
+		return GN_FALSE;
 	}
 
 	/* Open Parent.
@@ -1363,8 +1369,8 @@ int dr_load_roms(GAME_ROMS *r, char *rom_path, char *name) {
 	 */
 	gzp = open_rom_zip(rom_path, drv->parent);
 	if (gzp == NULL) {
-		sprintf(romerror,"Parent %s/%s.zip not found\n", rom_path, name);
-		return false;
+		gn_set_error_msg("Parent %s/%s.zip not found\n", rom_path, name);
+		return GN_FALSE;
 	}
 
 	//printf("year %d\n",drv->year);
@@ -1439,14 +1445,14 @@ int dr_load_roms(GAME_ROMS *r, char *rom_path, char *name) {
 						drv->rom[i].filename);
 				DEBUG_LOG("From parent %d\n", pi);
 				if (pi && (region != 5 && region != 0 && region != 7)) {
-					sprintf(romerror, "ERROR: File %s not found\n",
+					gn_set_error_msg("ERROR: File %s not found\n",
 							drv->rom[i].filename);
 					goto error1;
 				}
 			} else {
 				int region = drv->rom[i].region;
 				if (region != 5 && region != 0 && region != 7) {
-					sprintf(romerror, "ERROR: File %s not found\n",
+					gn_set_error_msg("ERROR: File %s not found\n",
 							drv->rom[i].filename);
 					goto error1;
 				}
@@ -1494,10 +1500,10 @@ error1:
 		gn_close_zip(gzp);
 
 	free(drv);
-	return false;
+	return GN_FALSE;
 }
 
-bool dr_load_game(char *name) {
+int dr_load_game(char *name) {
 	//GAME_ROMS rom;
 	char *rpath = CF_STR(cf_get_item_by_name("rompath"));
 	int rc;
@@ -1507,8 +1513,8 @@ bool dr_load_game(char *name) {
 	memory.bksw_offset = NULL;
 
 	rc = dr_load_roms(&memory.rom, rpath, name);
-	if (rc == false) {
-		return false;
+	if (rc == GN_FALSE) {
+		return GN_FALSE;
 	}
 	conf.game = memory.rom.info.name;
 	/* TODO *///neogeo_fix_bank_type =0;
@@ -1524,16 +1530,16 @@ bool dr_load_game(char *name) {
 	/* TODO: Move this somewhere else. */
 	init_video();
 
-	return true;
+	return GN_TRUE;
 
 }
 
 #if defined(HAVE_LIBZ)//&& defined (HAVE_MMAP)
 
-static int dump_region(FILE *gno, ROM_REGION *rom, Uint8 id, Uint8 type,
+static int dump_region(FILE *gno, const ROM_REGION *rom, Uint8 id, Uint8 type,
 		Uint32 block_size) {
 	if (rom->p == NULL)
-		return FALSE;
+		return GN_FALSE;
 	fwrite(&rom->size, sizeof (Uint32), 1, gno);
 	fwrite(&id, sizeof (Uint8), 1, gno);
 	fwrite(&type, sizeof (Uint8), 1, gno);
@@ -1546,7 +1552,7 @@ static int dump_region(FILE *gno, ROM_REGION *rom, Uint8 id, Uint8 type,
 		Uint32 cur_offset = 0;
 		long offset_pos;
 		Uint32 i;
-		Uint8 *inbuf = rom->p;
+		const Uint8 *inbuf = rom->p;
 		Uint8 *outbuf;
 		uLongf outbuf_len;
 		uLongf outlen;
@@ -1582,16 +1588,18 @@ static int dump_region(FILE *gno, ROM_REGION *rom, Uint8 id, Uint8 type,
 			printf("bank %d outlen=%d offset=%d\n", i, outlen32, cur_offset);
 			fwrite(outbuf, outlen, 1, gno);
 		}
+		free(outbuf);
 		/* Now, write the offset table */
 		fseek(gno, offset_pos, SEEK_SET);
 		fwrite(block_offset, sizeof (Uint32), nb_block, gno);
+		free(block_offset);
 		fwrite(&cmpsize, sizeof (Uint32), 1, gno);
 		printf("cmpsize=%d\n", cmpsize);
 		fseek(gno, 0, SEEK_END);
 		offset_pos = ftell(gno);
 		printf("currpos=%li\n", offset_pos);
 	}
-	return TRUE;
+	return GN_TRUE;
 }
 
 int dr_save_gno(GAME_ROMS *r, char *filename) {
@@ -1603,7 +1611,7 @@ int dr_save_gno(GAME_ROMS *r, char *filename) {
 
 	gno = fopen(filename, "wb");
 	if (!gno)
-		return FALSE;
+		return GN_FALSE;
 
 	/* restore game vector */
 	memcpy(memory.rom.cpu_m68k.p, memory.game_vector, 0x80);
@@ -1662,7 +1670,7 @@ int dr_save_gno(GAME_ROMS *r, char *filename) {
 
 
 	fclose(gno);
-	return TRUE;
+	return GN_TRUE;
 }
 
 int read_region(FILE *gno, GAME_ROMS *roms) {
@@ -1710,7 +1718,7 @@ int read_region(FILE *gno, GAME_ROMS *roms) {
 			r = &roms->bios_m68k;
 			break;
 		default:
-			return FALSE;
+			return GN_FALSE;
 	}
 
 	printf("Read region %d %08X type %d\n", lid, size, type);
@@ -1739,13 +1747,13 @@ int read_region(FILE *gno, GAME_ROMS *roms) {
 
 		/* TODO: Find the best cache size dynamically! */
 		for (i = 0; cache_size[i] != 0; i++) {
-			if (init_sprite_cache(cache_size[i]*1024 * 1024, block_size) == 0) {
+			if (init_sprite_cache(cache_size[i]*1024 * 1024, block_size) == GN_TRUE) {
 				printf("Cache size=%dMB\n", cache_size[i]);
 				break;
 			}
 		}
 	}
-	return TRUE;
+	return GN_TRUE;
 }
 
 int dr_open_gno(char *filename) {
@@ -1766,12 +1774,13 @@ int dr_open_gno(char *filename) {
 
 	gno = fopen(filename, "rb");
 	if (!gno)
-		return FALSE;
+		return GN_FALSE;
 
 	totread += fread(fid, 8, 1, gno);
 	if (strncmp(fid, "gnodmpv1", 8) != 0) {
+		fclose(gno);
 		printf("Invalid GNO file\n");
-		return FALSE;
+		return GN_FALSE;
 	}
 	totread += fread(name, 8, 1, gno);
 	a = strchr(name, ' ');
@@ -1803,7 +1812,8 @@ int dr_open_gno(char *filename) {
 	/* Init rom and bios */
 	init_roms(r);
 	//convert_all_tile(r);
-	dr_load_bios(r);
+	if (dr_load_bios(r)==GN_FALSE)
+		return GN_FALSE;
 
 	conf.game = memory.rom.info.name;
 
@@ -1811,13 +1821,14 @@ int dr_open_gno(char *filename) {
 	memcpy(memory.rom.cpu_m68k.p, memory.rom.bios_m68k.p, 0x80);
 	init_video();
 
-	return TRUE;
+	return GN_TRUE;
 }
 
 char *dr_gno_romname(char *filename) {
 	FILE *gno;
 	char fid[9]; // = "gnodmpv1";
 	char name[9] = {0,};
+	char *space;
 	size_t totread = 0;
 
 	gno = fopen(filename, "rb");
@@ -1831,6 +1842,10 @@ char *dr_gno_romname(char *filename) {
 	}
 
 	totread += fread(name, 8, 1, gno);
+
+	space=strchr(name,' ');
+	if (space!=NULL) space[0]=0;
+
 	fclose(gno);
 	return strdup(name);
 }
@@ -1839,11 +1854,11 @@ char *dr_gno_romname(char *filename) {
 #else
 
 static int dump_region(FILE *gno, ROM_REGION *rom, Uint8 id, Uint8 type, Uint32 block_size) {
-	return TRUE;
+	return GN_TRUE;
 }
 
 int dr_save_gno(GAME_ROMS *r, char *filename) {
-	return TRUE;
+	return GN_TRUE;
 }
 #endif
 
@@ -1885,4 +1900,228 @@ void dr_free_roms(GAME_ROMS *r) {
 	free(r->info.longname);
 
 	conf.game = NULL;
+}
+
+
+void open_nvram(char *name) {
+    char *filename;
+    size_t totread = 0;
+#ifdef EMBEDDED_FS
+    const char *gngeo_dir = ROOTPATH"save/";
+#elif defined(__AMIGA__)
+    const char *gngeo_dir = "/PROGDIR/save/";
+#else
+    const char *gngeo_dir = get_gngeo_dir();
+#endif
+    FILE *f;
+    int len = strlen(name) + strlen(gngeo_dir) + 4; /* ".nv\0" => 4 */
+
+    filename = (char *) alloca(len);
+    sprintf(filename, "%s%s.nv", gngeo_dir, name);
+
+    if ((f = fopen(filename, "rb")) == 0)
+        return;
+    totread = fread(memory.sram, 1, 0x10000, f);
+    fclose(f);
+
+}
+
+/* TODO: multiple memcard */
+void open_memcard(char *name) {
+    char *filename;
+    size_t totread = 0;
+#ifdef EMBEDDED_FS
+    const char *gngeo_dir = ROOTPATH"save/";
+#elif defined(__AMIGA__)
+    const char *gngeo_dir = "/PROGDIR/save/";
+#else
+    const char *gngeo_dir = get_gngeo_dir();
+#endif
+    FILE *f;
+    int len = strlen("memcard") + strlen(gngeo_dir) + 1; /* ".nv\0" => 4 */
+
+    filename = (char *) alloca(len);
+    sprintf(filename, "%s%s", gngeo_dir, "memcard");
+
+    if ((f = fopen(filename, "rb")) == 0)
+        return;
+    totread = fread(memory.memcard, 1, 0x800, f);
+    fclose(f);
+}
+
+void save_nvram(char *name) {
+    char *filename;
+#ifdef EMBEDDED_FS
+    const char *gngeo_dir = ROOTPATH"save/";
+#elif defined(__AMIGA__)
+    const char *gngeo_dir = strdup("/PROGDIR/save/");
+#else
+    const char *gngeo_dir = get_gngeo_dir();
+#endif
+    FILE *f;
+    int len = strlen(name) + strlen(gngeo_dir) + 4; /* ".nv\0" => 4 */
+
+    //strlen(name) + strlen(getenv("HOME")) + strlen("/.gngeo/") + 4;
+    int i;
+    //    printf("Save nvram %s\n",name);
+    for (i = 0xffff; i >= 0; i--) {
+        if (memory.sram[i] != 0)
+            break;
+    }
+
+    filename = (char *) alloca(len);
+
+    sprintf(filename, "%s%s.nv", gngeo_dir, name);
+
+    if ((f = fopen(filename, "wb")) != NULL) {
+        fwrite(memory.sram, 1, 0x10000, f);
+        fclose(f);
+    }
+}
+
+void save_memcard(char *name) {
+    char *filename;
+#ifdef EMBEDDED_FS
+    const char *gngeo_dir = ROOTPATH"save/";
+#elif defined(__AMIGA__)
+    const char *gngeo_dir = strdup("/PROGDIR/save/");
+#else
+    const char *gngeo_dir = get_gngeo_dir();
+#endif
+    FILE *f;
+    int len = strlen("memcard") + strlen(gngeo_dir) + 1; /* ".nv\0" => 4 */
+
+    filename = (char *) alloca(len);
+    sprintf(filename, "%s%s", gngeo_dir, "memcard");
+
+    if ((f = fopen(filename, "wb")) != NULL) {
+        fwrite(memory.memcard, 1, 0x800, f);
+        fclose(f);
+    }
+}
+
+int close_game(void) {
+    if (conf.game == NULL) return GN_FALSE;
+    save_nvram(conf.game);
+    save_memcard(conf.game);
+
+    dr_free_roms(&memory.rom);
+    trans_pack_free();
+
+    return GN_TRUE;
+}
+
+int load_game_config(char *rom_name) {
+	char *gpath;
+	char *drconf;
+#ifdef EMBEDDED_FS
+    gpath=ROOTPATH"conf/";
+#else
+    gpath=get_gngeo_dir();
+#endif
+	cf_reset_to_default();
+	cf_open_file(NULL); /* Reset possible previous setting */
+	if (rom_name) {
+		if (strstr(rom_name,".gno")!=NULL) {
+			char *name=dr_gno_romname(rom_name);
+			if (name) {
+				printf("Tring to load a gno file %s %s\n",rom_name,name);
+				drconf=alloca(strlen(gpath)+strlen(name)+strlen(".cf")+1);
+				sprintf(drconf,"%s%s.cf",gpath,name);
+			} else {
+				printf("Error while loading %s\n",rom_name);
+				return GN_FALSE;
+			}
+		} else {
+			drconf=alloca(strlen(gpath)+strlen(rom_name)+strlen(".cf")+1);
+			sprintf(drconf,"%s%s.cf",gpath,rom_name);
+		}
+		cf_open_file(drconf);
+	}
+	return GN_TRUE;
+}
+
+int init_game(char *rom_name) {
+//printf("AAA Blitter %s effect %s\n",CF_STR(cf_get_item_by_name("blitter")),CF_STR(cf_get_item_by_name("effect")));
+
+	load_game_config(rom_name);
+	/* reinit screen if necessary */
+	//screen_change_blitter_and_effect(NULL,NULL);
+	reset_frame_skip();
+	screen_reinit();
+	printf("BBB Blitter %s effect %s\n",CF_STR(cf_get_item_by_name("blitter")),CF_STR(cf_get_item_by_name("effect")));
+    /* open transpack if need */
+    trans_pack_open(CF_STR(cf_get_item_by_name("transpack")));
+
+    if (strstr(rom_name, ".gno") != NULL) {
+        if (dr_open_gno(rom_name)==GN_FALSE)
+        	return GN_FALSE;
+    } else {
+
+        //open_rom(rom_name);
+	if (dr_load_game(rom_name) == GN_FALSE) {
+#if defined(GP2X)
+            gn_popup_error(" Error! :", "Couldn't load %s",
+                    file_basename(rom_name));
+#else
+            printf("Can't load %s\n", rom_name);
+#endif
+            return GN_FALSE;
+        }
+
+    }
+
+    open_nvram(conf.game);
+    open_memcard(conf.game);
+#ifndef GP2X /* crash on the gp2x */
+    sdl_set_title(conf.game);
+#endif
+    init_neo();
+    setup_misc_patch(conf.game);
+
+    fix_usage = memory.fix_board_usage;
+    current_pal = memory.vid.pal_neo[0];
+    current_fix = memory.rom.bios_sfix.p;
+    current_pc_pal = (Uint32 *) memory.vid.pal_host[0];
+
+	memory.vid.currentpal=0;
+	memory.vid.currentfix=0;
+
+
+    return GN_TRUE;
+}
+
+char *remove_path_and_extension(char* mystr, char dot, char sep) {
+    char *retstr, *lastdot, *lastsep;
+	char *filename;
+    // Error checks and allocate string.
+
+    if (mystr == NULL)
+        return NULL;
+    if ((retstr = malloc (strlen (mystr) + 1)) == NULL)
+        return NULL;
+
+    // Make a copy and find the relevant characters.
+	filename = basename(mystr);
+    strcpy (retstr, filename);
+    lastdot = strrchr (retstr, dot);
+    lastsep = (sep == 0) ? NULL : strrchr (retstr, sep);
+
+    // If it has an extension separator.
+
+    if (lastdot != NULL) {
+        // and it's before the extenstion separator.
+        if (lastsep != NULL) {
+            if (lastsep < lastdot) {
+                // then remove it.
+                *lastdot = '\0';
+            }
+        } else {
+            // Has extension separator with no path separator.
+            *lastdot = '\0';
+        }
+    }
+
+    // Return the modified string.
+    return retstr;
 }

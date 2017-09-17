@@ -47,7 +47,6 @@
 #include "video.h"
 #include "conf.h"
 #include "resfile.h"
-#include "fileio.h"
 #include "sound.h"
 #include "effect.h"
 
@@ -466,7 +465,6 @@ void draw_string(SDL_Surface *dst, GNFONT *f, int x, int y, char *str) {
 static void init_back(void) {
 	SDL_Rect dst_r = {24, 16, 304, 224};
 	static SDL_Rect screen_rect = {0, 0, 304, 224};
-	SDL_BlitSurface(state_img, &screen_rect, menu_back, &dst_r);
 	SDL_BlitSurface(back, NULL, menu_back, &dst_r);
 }
 

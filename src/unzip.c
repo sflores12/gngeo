@@ -24,6 +24,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
+#include <sys/stat.h>
 #include "unzip.h"
 
 static int fget8(FILE *f) {
@@ -220,7 +221,7 @@ static int unzip_locate_file(PKZIP *zf, char *filename, uint32_t file_crc) {
 	return -1;
 }
 
-ZFILE *gn_unzip_fopen(PKZIP *zf, char *filename, uint32_t file_crc) {
+ZFILE *gn_unzip_fopen(PKZIP *zf, const char *filename, uint32_t file_crc) {
 	ZFILE *z;
 	uint32_t sig;
 	int cmeth, xf_len, fname_len;
@@ -323,7 +324,7 @@ int gn_unzip_fread(ZFILE *z, uint8_t *data, unsigned int size) {
 	return readed;
 }
 
-uint8_t *gn_unzip_file_malloc(PKZIP *zf, char *filename, uint32_t file_crc,
+uint8_t *gn_unzip_file_malloc(PKZIP *zf, const char *filename, uint32_t file_crc,
 		unsigned int *outlen) {
 	ZFILE *z = gn_unzip_fopen(zf, filename, file_crc);
 	int readed;

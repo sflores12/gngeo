@@ -41,7 +41,7 @@ static int get_mapid(char *butid) {
 	return GN_NONE;
 }
 
-bool create_joymap_from_string(int player,char *jconf) {
+int create_joymap_from_string(int player,char *jconf) {
 	char *v;
 	char butid[32]={0,};
 	char jevt;
@@ -106,7 +106,7 @@ bool create_joymap_from_string(int player,char *jconf) {
 	return true;
 }
 
-bool init_event(void) {
+int init_event(void) {
 	int i;
 //	printf("sizeof joymap=%d nb_joy=%d\n",sizeof(JOYMAP),conf.nb_joy);
 	jmap=calloc(sizeof(JOYMAP),1);
