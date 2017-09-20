@@ -2,8 +2,9 @@
  * unzip.h
  * Basic unzip interface
  *
- * Author: Mathieu Peponas
-*/
+ *  Created on: 1 janv. 2010
+ *      Author: Mathieu Peponas
+ */
 
 #ifndef UNZIP_H_
 #define UNZIP_H_

@@ -109,8 +109,8 @@ static void debug(UWORD pc)
 }
 #endif
 
-void cpu_z80_mkstate(gzfile gzf,int mode) {
-	/*TODO*/
+void cpu_z80_mkstate(gzFile gzf,int mode) {
+	/* TODO */
 }
 
 void cpu_z80_init(void)

@@ -3,7 +3,7 @@
 #define H_ROMS
 
 #include "SDL.h"
-#include <stdbool.h>
+//#include <stdbool.h>
 
 #define REGION_AUDIO_CPU_BIOS        0
 #define REGION_AUDIO_CPU_CARTRIDGE   1
@@ -51,6 +51,7 @@ typedef struct ROM_REGION {
 	Uint32 size;
 }ROM_REGION;
 
+
 typedef struct GAME_ROMS {
 	GAME_INFO info;
 	ROM_REGION cpu_m68k;
@@ -69,6 +70,8 @@ typedef struct GAME_ROMS {
 	ROM_REGION cpu_z80c; /* Crypted z80 program rom */
 }GAME_ROMS;
 
+
+
 int dr_load_roms(GAME_ROMS *r,char *rom_path,char *name);
 void dr_free_roms(GAME_ROMS *r);
 int dr_save_gno(GAME_ROMS *r,char *filename);
@@ -76,5 +79,8 @@ int dr_load_game(char *zip);
 ROM_DEF *dr_check_zip(const char *filename);
 char *dr_gno_romname(char *filename);
 int dr_open_gno(char *filename);
+int init_game(char *rom_name);
+int close_game(void);
+char *remove_path_and_extension(char* mystr, char dot, char sep);
 
 #endif

@@ -88,6 +88,7 @@ void my_timer(void)
     int i;
 
     if (init) {
+	//timer_init_save_state();
 	init = 0;
 
 	if (conf.pal) {

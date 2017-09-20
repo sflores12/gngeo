@@ -6,10 +6,12 @@
 #include <stdlib.h>
 #include <strings.h>
 #include <string.h>
+//#include <stdbool.h>
 #include "roms.h"
 #include "emu.h"
 #include "memory.h"
-#if defined(HAVE_LIBZ)
+//#include "unzip.h"
+#if defined(HAVE_LIBZ)// && defined (HAVE_MMAP)
 #include "zlib.h"
 #endif
 #include "unzip.h"

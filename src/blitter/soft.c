@@ -1,3 +1,4 @@
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -79,17 +80,17 @@ blitter_soft_init()
 	    width *=scale;
 	    height *=scale;
 	}
-
+	
 #ifdef PANDORA
-
+		
 	if (CF_BOOL(cf_get_item_by_name("wide"))) {
 		setenv("SDL_OMAP_LAYER_SIZE","800x480",1);
 	} else {
 		setenv("SDL_OMAP_LAYER_SIZE","640x480",1);
 	}
-
+	
 #endif
-
+	
 #ifdef GP2X
 	//screen = SDL_SetVideoMode(width, height, 16, sdl_flags);
 
@@ -103,7 +104,7 @@ blitter_soft_init()
 		if (CF_BOOL(cf_get_item_by_name("vsync"))) {
 			set_LCD_custom_rate(LCDR_60);
 		}
-
+		
 		if (width!=320) {
 			//screen_rect.x=8;
 			SDL_GP2X_MiniDisplay(8,8);

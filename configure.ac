@@ -5,9 +5,10 @@ AC_CONFIG_SRCDIR([src/emu.c])
 AC_CANONICAL_TARGET
 AC_CONFIG_HEADERS([config.h])
 
-AC_CHECK_FUNCS([memmove setenv sqrt strcasecmp strdup strrchr strtol])
-AC_CHECK_HEADERS([fcntl.h sys/ioctl.h])
-AC_CHECK_HEADER_STDBOOL
+AC_CHECK_FUNCS([memmove] [setenv] [sqrt] [strcasecmp] [strdup] [strrchr] [strtol] [munmap] [realpath])
+AC_FUNC_LSTAT_FOLLOWS_SLASHED_SYMLINK
+AC_CHECK_HEADERS([fcntl.h] [sys/ioctl.h])
+AC_HEADER_STDBOOL
 AC_FUNC_ALLOCA
 AC_FUNC_ERROR_AT_LINE
 AC_FUNC_MALLOC
@@ -15,11 +16,12 @@ AC_FUNC_MMAP
 AC_FUNC_REALLOC
 AC_TYPE_INT32_T
 AC_TYPE_INT8_T
+AC_TYPE_SIZE_T
 AC_TYPE_UINT16_T
 AC_TYPE_UINT32_T
 AC_TYPE_UINT8_T
 
-AM_INIT_AUTOMAKE(silent-rules)
+AM_INIT_AUTOMAKE([silent-rules])
 AM_SILENT_RULES
 
 # it's not optimal, but at least, it work
@@ -52,7 +54,6 @@ GN_ARG_ENABLE(pandora, [--enable-pandora        Enable PANDORA build])
 GN_ARG_ENABLE(win32,   [--enable-win32          Enable WIN32 build])
 GN_ARG_ENABLE(dingux,  [--enable-dingux         Enable DINGUX build])
 GN_ARG_ENABLE(embedded,[--enable-embedded       Enable Embedded directory structure])
-
 
 # Check for SDL
 SDL_VERSION=1.2.0
@@ -297,7 +298,7 @@ AC_DEFINE(ALIGNLONGS, ALIGNLONGS,
 
 
 AC_CONFIG_FILES([Makefile
-	 gngeo.dat/Makefile
+	 data/Makefile
 	 src/Makefile
 	 src/raze/Makefile
          src/star/Makefile

@@ -149,9 +149,7 @@ void init_neo(void) {
 	int z80_overclk = CF_VAL(cf_get_item_by_name("z80clock"));
 #endif
 
-#ifdef neogeo_init_save_state
 	neogeo_init_save_state();
-#endif
 
 #ifdef GP2X
 	gp2x_ram_ptr_reset();
@@ -339,6 +337,7 @@ void main_loop(void) {
 		//neo_emu_done=
 		if (handle_event()) {
 			int interp = interpolation;
+			SDL_BlitSurface(buffer, &buf_rect, state_img, &screen_rect);
 			interpolation = 0;
 			if (conf.sound) pause_audio(1);
 			if (run_menu() == 2) {

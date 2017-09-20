@@ -1,3 +1,4 @@
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -12,9 +13,10 @@
 static SDL_Rect ov_rect;
 static SDL_Overlay *overlay;
 
+
 int
 blitter_overlay_init()
-{
+{	
     Uint32 width = visible_area.w;
     Uint32 height = visible_area.h;
     Uint32 sdl_flags = (fullscreen?SDL_FULLSCREEN:0)|SDL_HWSURFACE|SDL_RESIZABLE;
@@ -27,7 +29,8 @@ blitter_overlay_init()
 	printf("WARNING: Overlay does not support effect.\n");
 	return GN_FALSE;
     }
-
+	
+	
 	/* YV12 blitter must be double sized */
     if (scale<2) scale=2;
     width *= scale;
@@ -39,14 +42,14 @@ blitter_overlay_init()
     screen = SDL_SetVideoMode(width, height, 0, sdl_flags);
 
     overlay = SDL_CreateYUVOverlay(visible_area.w*2,visible_area.h*2,SDL_YV12_OVERLAY,screen);
-
+	
     for(i=0;i<overlay->pitches[1]*overlay->h/2;i++) {
         overlay->pixels[1][i]=128;
         overlay->pixels[2][i]=128;
     }
-
+    
     init_rgb2yuv_table();
-
+    
     ov_rect.x=0;
     ov_rect.y=0;
     ov_rect.w=width;
@@ -63,10 +66,10 @@ blitter_overlay_resize(int w,int h)
   ov_rect.y=0;
   ov_rect.w=w;
   ov_rect.h=h;
-  return SDL_TRUE;
+  return GN_TRUE;
 }
 
-void
+void 
 blitter_overlay_update(void)
 {
     int x,y;
@@ -96,8 +99,9 @@ blitter_overlay_close() {
     if (overlay) SDL_FreeYUVOverlay(overlay);
     scale=CF_VAL(cf_get_item_by_name("scale"));
 }
-
+	
 void
 blitter_overlay_fullscreen() {
     SDL_WM_ToggleFullScreen(screen);
 }
+	

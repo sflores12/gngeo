@@ -152,7 +152,7 @@ int init_sprite_cache(Uint32 size, Uint32 bsize) {
 	gcache->data = malloc(gcache->size);
 	if (gcache->data == NULL) {
 		free(gcache->ptr);
-		return 1;
+		return GN_FALSE;
 	}
 	printf("INIT CACHE %p\n", gcache->data);
 
@@ -170,7 +170,7 @@ int init_sprite_cache(Uint32 size, Uint32 bsize) {
 #else
 	gcache->in_buf = malloc(compressBound(bsize));
 #endif
-	return 0;
+	return GN_TRUE;
 }
 
 void free_sprite_cache(void) {
@@ -522,9 +522,9 @@ void draw_screen(void) {
 			offs += 2;
 
 
-			if (memory.nb_of_tiles > 0x10000 && tileatr & 0x10) tileno += 0x10000;
-			if (memory.nb_of_tiles > 0x20000 && tileatr & 0x20) tileno += 0x20000;
-			if (memory.nb_of_tiles > 0x40000 && tileatr & 0x40) tileno += 0x40000;
+			if (memory.nb_of_tiles > 0x10000 && (tileatr & 0x10)) tileno += 0x10000;
+			if (memory.nb_of_tiles > 0x20000 && (tileatr & 0x20)) tileno += 0x20000;
+			if (memory.nb_of_tiles > 0x40000 && (tileatr & 0x40)) tileno += 0x40000;
 
 
 			/* animation automatique */
@@ -788,9 +788,9 @@ void draw_screen_scanline(int start_line, int end_line, int refresh) {
 			tileno = READ_WORD(&vidram[offs + (tile << 2)]);
 			tileatr = READ_WORD(&vidram[offs + (tile << 2) + 2]);
 
-			if (memory.nb_of_tiles > 0x10000 && tileatr & 0x10) tileno += 0x10000;
-			if (memory.nb_of_tiles > 0x20000 && tileatr & 0x20) tileno += 0x20000;
-			if (memory.nb_of_tiles > 0x40000 && tileatr & 0x40) tileno += 0x40000;
+			if (memory.nb_of_tiles > 0x10000 && (tileatr & 0x10)) tileno += 0x10000;
+			if (memory.nb_of_tiles > 0x20000 && (tileatr & 0x20)) tileno += 0x20000;
+			if (memory.nb_of_tiles > 0x40000 && (tileatr & 0x40)) tileno += 0x40000;
 
 			/* animation automatique */
 			if (tileatr & 0x8) tileno = (tileno&~7)+((tileno + neogeo_frame_counter)&7);

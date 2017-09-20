@@ -10,9 +10,12 @@
 #include "config.h"
 #endif
 
+
+#include <sys/stat.h>
+
 #if defined(HAVE_LIBZ) && defined (HAVE_MMAP)
 #include <zlib.h>
-#include <sys/stat.h>
+//#define ZLIB_IN_CHUNK 128*1024
 #include <unistd.h>
 #include <sys/mman.h>
 #include <assert.h>
@@ -24,7 +27,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
-#include <sys/stat.h>
 #include "unzip.h"
 
 static int fget8(FILE *f) {
@@ -181,7 +183,7 @@ static int search_central_dir(PKZIP *zf) {
 	return 0;
 }
 
-static int unzip_locate_file(PKZIP *zf, char *filename, uint32_t file_crc) {
+static int unzip_locate_file(PKZIP *zf, const char *filename, uint32_t file_crc) {
 	int pos;
 	uint32_t crc, offset;
 	uint16_t xf_len, fcomment_len, fname_len;
@@ -369,9 +371,24 @@ PKZIP *gn_open_zip(char *file) {
 	PKZIP *zf = malloc(sizeof(PKZIP));
 	int size;
 	int e;
+	struct stat sb;
+//printf("CWR %s\n",get_current_dir_name());
+
+	if (lstat(file,&sb)==-1) {
+		printf("Couldn't open %s\n", file);
+		free(zf);
+		return NULL;
+	}
+
+	if (!S_ISREG(sb.st_mode) && !S_ISLNK(sb.st_mode)) {
+		printf("%s is not a regular file\n", file);
+		free(zf);
+		return NULL;
+	}
+
 	zf->file = fopen(file, "rb");
 	if (zf->file == NULL) {
-		printf("Couldn't open %s\n", file);
+		printf("Ho no! Couldn't open %s\n", file);
 		free(zf);
 		return NULL;
 	}
@@ -391,6 +408,11 @@ PKZIP *gn_open_zip(char *file) {
 	return zf;
 }
 void gn_close_zip(PKZIP *zf) {
+#if defined(HAVE_LIBZ) && defined (HAVE_MMAP)
+	fseek(zf->file,0,SEEK_END);
+	int size=ftell(zf->file);
+	munmap(zf->map, size);
+#endif
 	fclose(zf->file);
 	free(zf);
 }

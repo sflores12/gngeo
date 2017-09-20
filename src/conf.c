@@ -43,21 +43,18 @@
 #include "memory.h"
 #include "gnutil.h"
 
+
 /* 
 
-Xbox360 conf: A=J0B0,B=J0B1,C=J0B2,D=J0B3,START=J0B6,COIN=J0B10,UP=J0a1,DOWN=J0a1,LEFT=J0A0,RIGHT=J0A0,MENU=J0B7
-   
-sixaxis conf: Need special calibration :(
-   
-GP2X conf:    
-   
-Pandora conf:
-   
-wii conf:
-   
-etc.
+   Xbox360 conf: A=J0B0,B=J0B1,C=J0B2,D=J0B3,START=J0B6,COIN=J0B10,UP=J0a1,DOWN=J0a1,LEFT=J0A0,RIGHT=J0A0,MENU=J0B7
+   sixaxis conf: Need special calibration :(
+   GP2X conf:    
+   Pandora conf:
+   wii conf:
+   etc.
 
-*/
+
+ */
 
 static struct {
 	CONF_ITEM **conf;
@@ -217,7 +214,7 @@ static CONF_ITEM * create_conf_item(const char *name, const char *help, char sho
  * short_opt: charatech use for short option
  * def: default value
  */
-void cf_create_bool_item(const char *name, const char *help, char short_opt, bool def) {
+void cf_create_bool_item(const char *name, const char *help, char short_opt, int def) {
 	CONF_ITEM *t = create_conf_item(name, help, short_opt, NULL);
 	t->type = CFT_BOOLEAN;
 	t->data.dt_bool.boolean = def;
@@ -294,6 +291,14 @@ CONF_ITEM* cf_get_item_by_val(int val) {
 		}
 	}
 	return NULL;
+}
+
+void cf_reset_all_changed_flag() {
+	int i, j;
+
+	for (i = 0; i < 128; i++)
+		for (j = 0; j < cf_hash[i].nb_item; j++)
+			cf_hash[i].conf[j]->modified=0;
 }
 
 void cf_item_has_been_changed(CONF_ITEM * item) {
@@ -380,32 +385,32 @@ void cf_init(void) {
 	cf_create_action_item("listgame", "Show all the game available in the romrc", 'l', show_all_game);
 	cf_create_action_item("version", "Show version and exit", 'v', show_version);
 
-	cf_create_bool_item("forcepc", "Force the PC to a correct value at startup", 0, false);
-	cf_create_bool_item("dump", "Create a gno dump in the current dir and exit", 0, false);
+	cf_create_bool_item("forcepc", "Force the PC to a correct value at startup", 0, GN_FALSE);
+	cf_create_bool_item("dump", "Create a gno dump in the current dir and exit", 0, GN_FALSE);
 
-	cf_create_bool_item("interpolation", "Merge the last frame and the current", 'I', false);
-	cf_create_bool_item("raster", "Enable the raster interrupt", 'r', false);
-	cf_create_bool_item("sound", "Enable sound", 0, true);
-	cf_create_bool_item("showfps", "Show FPS at startup", 0, false);
+	cf_create_bool_item("interpolation", "Merge the last frame and the current", 'I', GN_FALSE);
+	cf_create_bool_item("raster", "Enable the raster interrupt", 'r', GN_FALSE);
+	cf_create_bool_item("sound", "Enable sound", 0, GN_TRUE);
+	cf_create_bool_item("showfps", "Show FPS at startup", 0, GN_FALSE);
 
-	cf_create_bool_item("sleepidle", "Sleep when idle", 0, false);
-	cf_create_bool_item("joystick", "Enable joystick support", 0, true);
-	cf_create_bool_item("debug", "Start with inline debuger", 'D', false);
-	cf_create_bool_item("hwsurface", "Use hardware surface for the screen", 'H', true);
+	cf_create_bool_item("sleepidle", "Sleep when idle", 0, GN_FALSE);
+	cf_create_bool_item("joystick", "Enable joystick support", 0, GN_TRUE);
+	cf_create_bool_item("debug", "Start with inline debuger", 'D', GN_FALSE);
+	cf_create_bool_item("hwsurface", "Use hardware surface for the screen", 'H', GN_TRUE);
 #ifdef PANDORA
-	cf_create_bool_item("vsync", "Synchronise the display with VBLANK", 0, true);
-	cf_create_bool_item("autoframeskip", "Enable auto frameskip", 0, false);
-	cf_create_bool_item("fullscreen", "Start gngeo in fullscreen", 'f', true);
-	cf_create_bool_item("wide", "Use all the Pandora Screen", 0, false);
+	cf_create_bool_item("vsync", "Synchronise the display with VBLANK", 0, GN_TRUE);
+	cf_create_bool_item("autoframeskip", "Enable auto frameskip", 0, GN_FALSE);
+	cf_create_bool_item("fullscreen", "Start gngeo in fullscreen", 'f', GN_TRUE);
+	cf_create_bool_item("wide", "Use all the Pandora Screen", 0, GN_FALSE);
 #else
-	cf_create_bool_item("vsync", "Synchronise the display with VBLANK", 0, false);
-	cf_create_bool_item("autoframeskip", "Enable auto frameskip", 0, true);
-	cf_create_bool_item("fullscreen", "Start gngeo in fullscreen", 'f', false);
+	cf_create_bool_item("vsync", "Synchronise the display with VBLANK", 0, GN_FALSE);
+	cf_create_bool_item("autoframeskip", "Enable auto frameskip", 0, GN_TRUE);
+	cf_create_bool_item("fullscreen", "Start gngeo in fullscreen", 'f', GN_FALSE);
 	
 #endif
-	cf_create_bool_item("pal", "Use PAL timing (buggy)", 'P', false);
-	cf_create_bool_item("screen320", "Use 320x224 output screen (instead 304x224)", 0, false);
-	cf_create_bool_item("bench", "Draw x frames, then quit and show average fps", 0, false);
+	cf_create_bool_item("pal", "Use PAL timing (buggy)", 'P', GN_FALSE);
+	cf_create_bool_item("screen320", "Use 320x224 output screen (instead 304x224)", 0, GN_FALSE);
+	cf_create_bool_item("bench", "Draw x frames, then quit and show average fps", 0, GN_FALSE);
 
 
 	cf_create_string_item("country", "Set the contry to japan, asia, usa or europe", "...", 0, "europe");
@@ -465,26 +470,29 @@ void cf_init(void) {
 
 
 #ifdef GP2X
-	cf_create_bool_item("ramhack", "Enable CraigX's RAM timing hack", 0, false);
-	cf_create_bool_item("tvout", "Enable Tvout (NTSC)", 0, false);
+	cf_create_bool_item("ramhack", "Enable CraigX's RAM timing hack", 0, GN_FALSE);
+	cf_create_bool_item("tvout", "Enable Tvout (NTSC)", 0, GN_FALSE);
 	cf_create_array_item("tv_offset", "Shift TV screen by x,y pixel", "x,y", 0, 2, default_tvoffset);
-	cf_create_bool_item("940sync", "Accurate synchronisation between the both core", 0, true);
+	cf_create_bool_item("940sync", "Accurate synchronisation between the both core", 0, GN_TRUE);
 	cf_create_int_item("cpu_speed", "Overclock the GP2X cpu to x Mhz", "x", 0, 0);
 	cf_create_string_item("frontend", "Execute CMD when exit. Usefull to return to Selector or Rage2x", "CMD", 0, "/usr/gp2x/gp2xmenu");
 #endif
-
+	//CF_SYSTEMOPT
+	cf_get_item_by_name("rompath")->flags|=CF_SYSTEMOPT;
+	cf_get_item_by_name("libglpath")->flags|=CF_SYSTEMOPT;
+	cf_get_item_by_name("datafile")->flags|=CF_SYSTEMOPT;
 }
 
 /* TODO: lame, do it better */
-bool discard_line(char *buf) {
+int discard_line(char *buf) {
 	if (buf[0] == '#')
-		return true;
+		return GN_TRUE;
 	if (buf[0] == '\n')
-		return true;
+		return GN_TRUE;
 	if (buf[0] == 0)
-		return true;
+		return GN_TRUE;
 
-	return false;
+	return GN_FALSE;
 }
 
 /* like standard fgets, but work with unix/dos line ending */
@@ -504,7 +512,9 @@ char *my_fgets(char *s, int size, FILE *stream) {
 	return s;
 }
 
-bool cf_save_file(char *filename, int flags) {
+
+
+int cf_save_option(char *filename, char *optname,int flags) {
 	char *conf_file = filename;
 	char *conf_file_dst;
 	FILE *f;
@@ -514,6 +524,7 @@ bool cf_save_file(char *filename, int flags) {
 	char name[32];
 	char val[255];
 	CONF_ITEM *cf;
+	CONF_ITEM *tosave; //cf_get_item_by_name(optname);
 
 	if (!conf_file) {
 #ifdef EMBEDDED_FS
@@ -535,8 +546,12 @@ bool cf_save_file(char *filename, int flags) {
 
 	if ((f_dst = fopen(conf_file_dst, "w")) == 0) {
 		//printf("Unable to open %s\n",conf_file);
-		return false;
+		return GN_FALSE;
 	}
+	if (optname!=NULL) {
+		tosave=cf_get_item_by_name(optname);
+		if (tosave) cf_item_has_been_changed(tosave);
+	} else tosave=NULL;
 
 	if ((f = fopen(conf_file, "rb"))) {
 
@@ -555,7 +570,7 @@ bool cf_save_file(char *filename, int flags) {
 			strncpy(val, buf + strlen(name) + 1, 254);
 
 			cf = cf_get_item_by_name(name);
-			if (cf) {
+			if (cf && (cf==tosave || tosave==NULL)) {
 				if (cf->modified) {
 					cf->modified = 0;
 					switch (cf->type) {
@@ -596,7 +611,7 @@ bool cf_save_file(char *filename, int flags) {
 		for (j = 0; j < cf_hash[i].nb_item; j++) {
 			cf = cf_hash[i].conf[j];
 			//printf("Option %s %d\n",cf->name,cf->modified);
-			if (cf->modified!=0) {
+			if (cf->modified!=0  && (cf==tosave || tosave==NULL)) {
 				cf->modified=0;
 				switch (cf->type) {
 					case CFT_INT:
@@ -633,7 +648,11 @@ bool cf_save_file(char *filename, int flags) {
 	remove(conf_file);
 	rename(conf_file_dst, conf_file);
 
-	return true;
+	return GN_TRUE;
+}
+
+int cf_save_file(char *filename, int flags) {
+	return cf_save_option(filename,NULL,flags);
 }
 
 void cf_reset_to_default(void) {
@@ -642,7 +661,7 @@ void cf_reset_to_default(void) {
 	for (i = 0; i < 128; i++) {
 		for (j = 0; j < cf_hash[i].nb_item; j++) {
 			cf = cf_hash[i].conf[j];
-			if (!cf->modified && !(cf->flags & CF_SETBYCMD)) {
+			if (!cf->modified && !(cf->flags & CF_SETBYCMD) &&!(cf->flags & CF_SYSTEMOPT)) {
 				switch (cf->type) {
 					case CFT_INT:
 						CF_VAL(cf) = cf->data.dt_int.default_val;
@@ -666,7 +685,7 @@ void cf_reset_to_default(void) {
 	}
 }
 
-bool cf_open_file(char *filename) {
+int cf_open_file(char *filename) {
 	/* if filename==NULL, we use the default one: $HOME/.gngeo/gngeorc */
 	char *conf_file = filename;
 	FILE *f;
@@ -693,7 +712,7 @@ bool cf_open_file(char *filename) {
 	}
 	if ((f = fopen(conf_file, "rb")) == 0) {
 		//printf("Unable to open %s\n",conf_file);
-		return false;
+		return GN_FALSE;
 	}
 
 	while (!feof(f)) {
@@ -717,7 +736,7 @@ bool cf_open_file(char *filename) {
 					CF_VAL(cf) = atoi(val);
 					break;
 				case CFT_BOOLEAN:
-					CF_BOOL(cf) = (strcasecmp(val, "true") == 0 ? true : false);
+					CF_BOOL(cf) = (strcasecmp(val, "true") == 0 ? GN_TRUE : GN_FALSE);
 					break;
 				case CFT_STRING:
 					strncpy(CF_STR(cf), val, 254);
@@ -740,7 +759,7 @@ bool cf_open_file(char *filename) {
 	}
 
 	cf_cache_conf();
-	return true;
+	return GN_TRUE;
 }
 
 

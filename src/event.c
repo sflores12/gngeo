@@ -2,6 +2,8 @@
 #include "config.h"
 #endif
 
+//#include <stdbool.h>
+
 #include "SDL.h"
 #include "screen.h"
 #include "event.h"
@@ -103,13 +105,38 @@ int create_joymap_from_string(int player,char *jconf) {
 		v=strtok(NULL,",");
 	}
   
-	return true;
+	return GN_TRUE;
 }
+
+static void calculate_hotkey_bitmasks()
+{
+    int *p;
+    int i, j, mask;
+    const char *p1_key_list[] = { "p1hotkey0", "p1hotkey1", "p1hotkey2", "p1hotkey3" };
+    const char *p2_key_list[] = { "p2hotkey0", "p2hotkey1", "p2hotkey2", "p2hotkey3" };
+
+
+    for ( i = 0; i < 4; i++ ) {
+	p=CF_ARRAY(cf_get_item_by_name(p1_key_list[i]));
+	for ( mask = 0, j = 0; j < 4; j++ ) mask |= p[j];
+	conf.p1_hotkey[i] = mask;
+    }
+
+    for ( i = 0; i < 4; i++ ) {
+	p=CF_ARRAY(cf_get_item_by_name(p2_key_list[i]));
+	for ( mask = 0, j = 0; j < 4; j++ ) mask |= p[j];
+	conf.p2_hotkey[i] = mask;
+    }
+
+}
+
 
 int init_event(void) {
 	int i;
 //	printf("sizeof joymap=%d nb_joy=%d\n",sizeof(JOYMAP),conf.nb_joy);
 	jmap=calloc(sizeof(JOYMAP),1);
+
+    calculate_hotkey_bitmasks();
 
 #ifdef WII
 	conf.nb_joy = 4;
@@ -141,7 +168,7 @@ int init_event(void) {
 	}
 	create_joymap_from_string(1,CF_STR(cf_get_item_by_name("p1control")));
 	create_joymap_from_string(2,CF_STR(cf_get_item_by_name("p2control")));
-	return true;
+	return GN_TRUE;
 }
 #ifdef GP2X
 int handle_pdep_event(SDL_Event *event) {
@@ -189,6 +216,10 @@ int handle_pdep_event(SDL_Event *event) {
 		switch (event->key.keysym.sym) {
 		case SDLK_ESCAPE:
 			return 1;
+			break;
+		case SDLK_F3:
+			draw_message("Test Switch ON");
+			conf.test_switch = 1;
 			break;
 		case SDLK_F12:
 		    screen_fullscreen();

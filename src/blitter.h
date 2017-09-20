@@ -1,9 +1,11 @@
+
 #ifndef _BLITTER_H_
 #define _BLITTER_H_
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
+
 
 #include "SDL.h"
 
@@ -38,5 +40,6 @@ void blitter_overlay_fullscreen();
 void blitter_overlay_close();
 
 extern blitter_func blitter[];
+
 
 #endif

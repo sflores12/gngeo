@@ -1,5 +1,5 @@
 /* Declarations for getopt.
-   Copyright (C) 1989-1994, 1996-1999, 2001, 2017 Free Software Foundation, Inc.
+   Copyright (C) 1989-1994, 1996-1999, 2001 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -20,7 +20,7 @@
 #ifndef _GETOPT_H
 
 #ifndef __need_getopt
-#define _GETOPT_H 1
+# define _GETOPT_H 1
 #endif
 
 /* If __GNU_LIBRARY__ is not already defined, either we are being used
@@ -31,7 +31,7 @@
    if it's from glibc.  (Why ctype.h?  It's guaranteed to exist and it
    doesn't flood the namespace with stuff the way some other headers do.)  */
 #if !defined __GNU_LIBRARY__
-#include <ctype.h>
+# include <ctype.h>
 #endif
 
 #ifdef	__cplusplus

@@ -16,6 +16,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. 
  */
 
+
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -132,11 +134,16 @@ int cpu_68k_getcycle(void)
     return s68000readOdometer();
 }
 
+
 void bankswitcher_init() {
     pretend_readbyte[1].memorycall=mem68k_fetch_bk_normal_byte;
     pretend_readword[1].memorycall=mem68k_fetch_bk_normal_word;
     pretend_writebyte[7].memorycall=mem68k_store_bk_normal_byte;
     pretend_writeword[7].memorycall=mem68k_store_bk_normal_word;
+}
+
+void cpu_68k_mkstate(gzFile gzf,int mode) {
+	/* TODO */
 }
 
 void cpu_68k_init(void)
@@ -260,7 +267,7 @@ static void dbg_get(char* s, int size) {
 	s[0]=0;
 	break;
     case 'R':
-	while(check_bp(cpu_68k_getpc())!=SDL_TRUE && dbg_step==0) {
+	while(check_bp(cpu_68k_getpc())!=GN_TRUE && dbg_step==0) {
 	     cpu_68k_dpg_step();
 	}
 	if (dbg_step) dbg_step=0;

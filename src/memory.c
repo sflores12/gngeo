@@ -52,6 +52,8 @@ Uint16 z80_bank[4];
 Uint32 bankaddress = 0;
 extern int current_line;
 
+
+
 void neogeo_sound_irq(int irq) {
 	//printf("neogeo_sound_irq %d\n",irq);
 #ifndef ENABLE_940T

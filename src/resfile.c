@@ -1,16 +1,17 @@
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
-
+#include <sys/stat.h>
 #include "SDL.h"
+#include "emu.h"
 #include "roms.h"
 #include "resfile.h"
 #include "unzip.h"
+//#include "stb_zlib.h"
 #include "conf.h"
 #include "stb_image.h"
-#include <sys/stat.h>
-#include "emu.h"
 #include "gnutil.h"
+
 
 void zread_char(ZFILE *gz, char *c, int len) {
 	int rc;
@@ -31,6 +32,38 @@ void zread_uint32le(ZFILE *gz, Uint32 *c) {
 	//printf("H32  %08x %d\n",*c,rc);
 }
 
+
+int res_verify_datafile(char *file) {
+	struct stat sb;
+
+	if (!file) file=CF_STR(cf_get_item_by_name("datafile"));
+
+	if (lstat(file,&sb)==-1) {
+		gn_set_error_msg("%s not found",file);
+		return GN_FALSE;
+	}
+
+	/* if it's a dir, try to append gngeo_data.zip, and recheck */
+	if (S_ISDIR(sb.st_mode)) {
+		char *buf=malloc(strlen(file)+strlen("/gngeo_data.zip")+1);
+		snprintf(buf,254,"%s/%s",file,"gngeo_data.zip");
+		if(res_verify_datafile(buf)==GN_TRUE) {
+			strncpy(CF_STR(cf_get_item_by_name("datafile")), buf, 254);
+			free(buf);
+			return GN_TRUE;
+		} else {
+			gn_set_error_msg("%s not found",buf);
+			free(buf);
+			return GN_FALSE;
+		}
+	}
+	if (S_ISREG(sb.st_mode)) return GN_TRUE;
+	gn_set_error_msg("%s not a valid file",file);
+	return GN_FALSE;
+
+
+}
+
 /*
  * Load a rom definition file from gngeo.dat (rom/name.drv)
  * return ROM_DEF*, NULL on error
@@ -48,13 +81,16 @@ ROM_DEF *res_load_drv(char *name) {
 	/* Open the rom driver def */
 	pz = gn_open_zip(gngeo_dat);
 	if (pz == NULL) {
-		fprintf(stderr, "Can't open the %s\n", gngeo_dat);
+		free(drv);
+		//fprintf(stderr, "Can't open the %s\n", gngeo_dat);
 		return NULL;
 	}
 	sprintf(drvfname, "rom/%s.drv", name);
 
 	if ((z=gn_unzip_fopen(pz,drvfname,0x0)) == NULL) {
-		fprintf(stderr, "Can't open rom driver for %s\n", name);
+		free(drv);
+		gn_close_zip(pz);
+		//fprintf(stderr, "Can't open rom driver for %s %s\n", name,drvfname);
 		return NULL;
 	}
 
@@ -79,8 +115,6 @@ ROM_DEF *res_load_drv(char *name) {
 	return drv;
 }
 
-
-
 /*
  * Load a stb image from gngeo.dat
  * return a SDL_Surface, NULL on error
@@ -94,7 +128,7 @@ SDL_Surface *res_load_stbi(char *bmp) {
 	unsigned int size;
 	int x, y, comp;
 	stbi_uc *data = NULL;
-
+	printf("DATAFILE = %s\n",CF_STR(cf_get_item_by_name("datafile")));
 	pz = gn_open_zip(CF_STR(cf_get_item_by_name("datafile")));
 	if (!pz)
 		return NULL;

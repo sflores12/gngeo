@@ -9,6 +9,7 @@
 #define LSB_FIRST
 #endif
 
+//#include "SDL_types.h"
 #include <stdint.h>
 #define UINT8     uint8_t
 #define UINT16    uint16_t
@@ -43,7 +44,7 @@ typedef struct
         int irq_param;                                  /* callback paramater */
 } Z80_DaisyChain;
 
-#define Z80_MAXDAISY    4               /* maximum of daisy chan device */
+#define Z80_MAXDAISY    1               /* maximum of daisy chan device */
 
 #define Z80_INT_REQ     0x01    /* interrupt request mask               */
 #define Z80_INT_IEO     0x02    /* interrupt disable mask(IEO)  */
@@ -91,6 +92,7 @@ enum
          * depends on the CPU core. */
         REG_SP_CONTENTS = -4
 };
+
 
 #define change_pc16(pc) Z80.PC.w.l=pc;
 
@@ -143,6 +145,7 @@ extern void z80_set_irq_callback(int (*irq_callback)(int));
 extern const char *z80_info(void *context, int regnum);
 extern unsigned z80_dasm(char *buffer, unsigned pc);
 
+
 /* interface */
 extern void mame_z80_writemem16(UINT16 addr,UINT8 val);
 extern UINT8 mame_z80_readmem16(UINT16 addr);
@@ -154,6 +157,9 @@ extern void mame_z80_writeport16(UINT16 port,UINT8 value);
 #ifdef MAME_DEBUG
 extern unsigned DasmZ80(char *buffer, unsigned pc);
 #endif
+
+extern uint z80_stateDataSize;
+UINT8 *z80_stateData(void);
 
 #endif
 

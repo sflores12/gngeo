@@ -380,6 +380,7 @@ static void MyWrite32(unsigned int a,unsigned int   d) {
 	//printf("Unhandled write32 @ %08x = %08x\n",a,d);
 }
 
+
 void cpu_68k_mkstate(gzFile gzf,int mode) {
 	printf("Save state mode %s PC=%08x\n",(mode==STREAD?"READ":"WRITE"),MyCyclone.pc-MyCyclone.membase);
 	if (mode==STWRITE) CyclonePack(&MyCyclone, save_buffer);
@@ -515,12 +516,6 @@ Uint32 cpu_68k_getpc(void) {
 	return MyCyclone.pc-MyCyclone.membase;
 }
 
-void cpu_68k_fill_state(M68K_STATE *st) {
-}
-
-
-void cpu_68k_set_state(M68K_STATE *st) {
-}
 
 int cpu_68k_debuger(void (*execstep)(void),void (*dump)(void)) {
 	/* TODO */

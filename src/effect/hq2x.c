@@ -29,7 +29,6 @@
  * file, but you are not obligated to do so.  If you do not wish to
  * do so, delete this exception statement from your version.
  */
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -56,14 +55,14 @@ static Uint16 height;
 void hq2x_16_i386(Uint8*, Uint8*, int, int, int);
 #endif
 
-SDL_bool effect_hq2x_init(void)
+int effect_hq2x_init(void)
 {
 #ifdef I386_ASM
     /* init LUT & RGB2YUV table*/
     InitLUTs();
     tmps= SDL_CreateRGBSurface(SDL_SWSURFACE,visible_area.w, visible_area.h, 16, 0xF800, 0x7E0, 0x1F, 0);
 #endif
-    return SDL_TRUE;
+    return GN_TRUE;
 }
 
 #ifndef I386_ASM

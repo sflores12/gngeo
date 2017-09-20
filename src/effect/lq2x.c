@@ -27,7 +27,6 @@
  * file, but you are not obligated to do so.  If you do not wish to
  * do so, delete this exception statement from your version.
  */
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -49,9 +48,9 @@
 static Uint16 *dst0, *dst1, *src0, *src1, *src2;
 static Uint16 height;
 
-SDL_bool effect_lq2x_init(void)
+int effect_lq2x_init(void)
 {
-    return SDL_TRUE;
+    return GN_TRUE;
 }
 
 void lq2x_16_def(Uint16 *dst0, Uint16 *dst1, Uint16 *src0, Uint16 *src1, Uint16 *src2, unsigned count)

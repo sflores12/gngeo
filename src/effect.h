@@ -1,9 +1,11 @@
+
 #ifndef _EFFECT_H_
 #define _EFFECT_H_
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
+
 
 #include "SDL.h"
 
@@ -51,6 +53,8 @@ void effect_sai_update();
 void effect_eagle_update();
 void effect_supersai_update();
 
+
 extern effect_func effect[];
+
 
 #endif
