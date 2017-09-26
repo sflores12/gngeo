@@ -809,7 +809,7 @@ static void draw_menu(GN_MENU *m) {
 
 //#undef NB_ITEM_2
 
-GN_MENU_ITEM *gn_menu_create_item(char *name, Uint32 type,
+GN_MENU_ITEM *gn_menu_create_item(const char *name, Uint32 type,
 		int(*action)(GN_MENU_ITEM *self, void *param), void *param) {
 	GN_MENU_ITEM *t = malloc(sizeof(GN_MENU_ITEM));
 	t->name = strdup(name);
@@ -1486,8 +1486,8 @@ if (init == 0) {
 	while (effect[i].name != NULL) {
 		effect_menu->item = list_append(
 				effect_menu->item,
-				(void*) gn_menu_create_item(effect[i].desc, MENU_ACTION,
-						change_effect_action, (void*) effect[i].name));
+				(void *) gn_menu_create_item(effect[i].desc, MENU_ACTION,
+						change_effect_action, (void *) effect[i].name));
 		effect_menu->nb_elem++;
 		i++;
 	}
@@ -1503,7 +1503,7 @@ return 0;
 }
 
 static int change_samplerate_action(GN_MENU_ITEM *self, void *param) {
-int rate = (int) self->arg;
+int rate = (int*) self->arg;
 
 if (rate != 0) {
 
@@ -1581,7 +1581,7 @@ return 0;
 }
 
 static int save_conf_action(GN_MENU_ITEM *self, void *param) {
-int type = (int) self->arg;
+int type = (int*) self->arg;
 if (type == 0)
 	cf_save_file(NULL, 0);
 else {

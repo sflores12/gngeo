@@ -3053,15 +3053,15 @@ void YM2610Update_SoundTest(int p)
 }
 #endif
 
-void ym2610_mkstate(gzFile *gzf, int mode) {
+void ym2610_mkstate(gzFile gzf, int mode) {
 	int r;
 	/* Old save state version was buggy, tried to load it anyway
 	 * Thanks Robert for the fix
 	 * */
 	if (state_version == ST_VER2 && mode == STREAD) {
 		struct ym2610_t ym2610_sav;
-		memcpy(&ym2610_sav, &YM2610, sizeof(YM2610));
-		mkstate_data(gzf, &YM2610, sizeof(YM2610), mode);
+		memcpy(&ym2610_sav, &YM2610, sizeof (YM2610));
+		mkstate_data(gzf, &YM2610, sizeof (YM2610), mode);
 		/* restore some pointer */
 		int fm, ch, slot;
 		YM2610.OPN.ST.Timer_Handler = ym2610_sav.OPN.ST.Timer_Handler;
