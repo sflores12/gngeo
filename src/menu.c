@@ -1503,11 +1503,11 @@ return 0;
 }
 
 static int change_samplerate_action(GN_MENU_ITEM *self, void *param) {
-int rate = (int*) self->arg;
+int *rate = (int*) self->arg;
 
 if (rate != 0) {
 
-	CF_VAL(cf_get_item_by_name("samplerate")) = rate;
+	CF_VAL(cf_get_item_by_name("samplerate")) = *rate;
 	cf_item_has_been_changed(cf_get_item_by_name("samplerate"));
 	if (conf.sound && conf.game)
 		close_sdl_audio();
@@ -1515,7 +1515,7 @@ if (rate != 0) {
 		cf_item_has_been_changed(cf_get_item_by_name("sound"));
 	conf.sound = 1;
 	CF_BOOL(cf_get_item_by_name("sound")) = 1;
-	conf.sample_rate = rate;
+	conf.sample_rate = *rate;
 	//init_sdl_audio();
 	//YM2610ChangeSamplerate(conf.sample_rate);
 	if (conf.game) {
@@ -1581,7 +1581,7 @@ return 0;
 }
 
 static int save_conf_action(GN_MENU_ITEM *self, void *param) {
-int type = (int*) self->arg;
+int *type = (int*) self->arg;
 if (type == 0)
 	cf_save_file(NULL, 0);
 else {
